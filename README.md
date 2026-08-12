@@ -1,6 +1,7 @@
 <div align="center">
 
-<img width="1672" height="941" alt="Aug 12, 2026, 08_09_04 PM" src="https://github.com/user-attachments/assets/d2575afe-8064-41a4-a64f-ca2720c27f22" />
+<img width="1672" height="941" alt="x" src="https://github.com/user-attachments/assets/dc4e189b-6b98-46e8-9574-f7cc33a241e9" />
+
 
  
  V E K T | Vector Exploitation & Kill Toolkit
