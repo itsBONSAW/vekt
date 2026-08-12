@@ -145,7 +145,7 @@ Thank you to the AI for making this project come to life so rapidly. To human co
 ---
 
 <div align="center">
-Made by **itsBONSAW** & AI
+Made by itsBONSAW & AI
 <br>
 <sub>Happy Hacking.</sub>
 </div>
