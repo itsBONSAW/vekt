@@ -1,4 +1,8 @@
 <div align="center">
+
+<img width="1672" height="941" alt="Aug 12, 2026, 08_09_04 PM" src="https://github.com/user-attachments/assets/d2575afe-8064-41a4-a64f-ca2720c27f22" />
+
+ 
  V E K T | Vector Exploitation & Kill Toolkit
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
