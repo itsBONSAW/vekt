@@ -31,8 +31,10 @@ Built with a decoupled architecture (FastAPI Backend + HTML/JS Frontend) and an 
 ## 📸 Screenshots
 
 <div align="center">
-
-
+<img width="1920" height="1080" alt="a" src="https://github.com/user-attachments/assets/f3250abf-37b9-4bae-bb62-d1e9e57f384d" />
+<img width="1920" height="1080" alt="b" src="https://github.com/user-attachments/assets/176f906f-46fb-406e-9658-5c8b89a27a19" />
+<img width="1920" height="1080" alt="c" src="https://github.com/user-attachments/assets/b639c574-a580-45c2-97ed-70e36c56569e" />
+<img width="1920" height="1080" alt="d" src="https://github.com/user-attachments/assets/290ff5b3-2aec-469e-853e-2b135cc20f03" />
 </div>
 
 ---
