@@ -9,16 +9,16 @@ class CrackerEngine:
         self.on_log = on_log
         self.on_success = on_success
         self.process = None
-        self.running = False
+        self.stop_event = threading.Event()
         self.hash_file = "/tmp/vekt_hash.hc22000"
 
     def start(self):
-        self.running = True
+        self.stop_event.clear()
         self.thread = threading.Thread(target=self._crack_loop, daemon=True)
         self.thread.start()
 
     def stop(self):
-        self.running = False
+        self.stop_event.set()
         if self.process:
             self.process.terminate()
         self.on_log("[!] Cracking stopped.")
@@ -31,26 +31,25 @@ class CrackerEngine:
         cmd_convert = ["hcxpcapngtool", "-o", self.hash_file, self.cap_file]
         self.process = subprocess.Popen(cmd_convert, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         for line in self.process.stdout:
-            if not self.running: break
+            if self.stop_event.is_set(): break
             if line.strip(): self.on_log(line.strip())
         self.process.wait()
 
         if not os.path.exists(self.hash_file) or os.path.getsize(self.hash_file) == 0:
             self.on_log("[-] Conversion failed. Handshake might be incomplete.")
-            self.running = False
+            self.stop_event.set()
             return
 
         self.on_log(f"[+] Converted successfully. Starting Hashcat...")
-
-        # Added --status and --status-timer=5 to show live progress
         cmd_crack = ["hashcat", "-m", "22000", self.hash_file, self.wordlist, "--force", "--status", "--status-timer=5"]
         self.process = subprocess.Popen(cmd_crack, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
 
         for line in self.process.stdout:
-            if not self.running: break
+            if self.stop_event.is_set(): break
             if line.strip(): self.on_log(line.strip())
-            
         self.process.wait()
+
+        if self.stop_event.is_set(): return
 
         cmd_show = ["hashcat", "-m", "22000", self.hash_file, "--show", "--force"]
         result = subprocess.run(cmd_show, capture_output=True, text=True)
@@ -63,5 +62,3 @@ class CrackerEngine:
             self.on_log(f"[+] Password Cracked: {password}")
         else:
             self.on_log("[-] Password not found in wordlist.")
-            
-        self.running = False

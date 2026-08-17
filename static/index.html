@@ -3,87 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIRAGE - MITM Framework</title>
-    <script src="/static/tailwind.js"></script>
+    <title>VEKT - Wireless Exploitation Toolkit</title>
+    <script src="static/tailwind.js"></script>
     <style>
         :root {
-            --neon-purple: #BD00FF;
             --neon-cyan: #00E5FF;
             --neon-green: #00FF9D;
             --neon-red: #FF003C;
             --neon-yellow: #FFD600;
+            --neon-purple: #BD00FF;
             --bg-dark: #050507;
         }
+        
         body {
             font-family: 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', monospace;
             background-color: var(--bg-dark);
             background-image: 
-                linear-gradient(rgba(189, 0, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
             overflow: hidden;
+            text-align: left;
         }
-        .glass-panel { background: rgba(10, 10, 12, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
-        .neon-purple { color: var(--neon-purple); text-shadow: 0 0 10px var(--neon-purple); }
+        
+        .font-display { font-family: 'DejaVu Sans', 'Arial Black', sans-serif; font-weight: 900; }
+        
+        .glass-panel {
+            background: rgba(10, 10, 12, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .neon-cyan { color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
         .neon-green { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
-        .neon-cyan { color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); }
-        .custom-scroll::-webkit-scrollbar { width: 4px; } .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0); } .custom-scroll::-webkit-scrollbar-thumb { background: var(--neon-purple); opacity: 0.5; border-radius: 2px; }
+        .neon-red { color: var(--neon-red); text-shadow: 0 0 8px var(--neon-red); }
+        .neon-yellow { color: var(--neon-yellow); text-shadow: 0 0 8px var(--neon-yellow); }
+        .neon-purple { color: var(--neon-purple); text-shadow: 0 0 8px var(--neon-purple); }
+
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0); }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--neon-cyan); opacity: 0.5; border-radius: 2px; }
+
         .target-row { transition: all 0.2s ease; border-left: 2px solid transparent; }
-        .target-row:hover { background-color: rgba(189, 0, 255, 0.05); border-left: 2px solid var(--neon-purple); }
-        .btn-cyber { transition: all 0.3s ease; text-transform: uppercase; cursor: pointer; border-radius: 4px; font-weight: bold; }
-        .btn-cyber:hover { transform: translateY(-1px); box-shadow: 0 0 15px currentColor; }
-        .btn-cyber:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
-        .btn-start { background-color: var(--neon-purple); color: #fff; }
-        .btn-stop { background-color: var(--neon-red); color: #fff; }
-        .btn-intercept { background-color: rgba(255, 0, 60, 0.2); color: var(--neon-red); border: 1px solid var(--neon-red); font-size: 10px; padding: 4px 12px; }
-        .btn-intercept-active { background-color: var(--neon-red); color: #fff; border: 1px solid var(--neon-red); font-size: 10px; padding: 4px 12px; }
-        .btn-disabled-fake { opacity: 0.5; cursor: not-allowed; }
-        
-        select { padding: 0 10px !important; margin: 0 !important; line-height: 1.5 !important; }
-        
+        .target-row:hover { background-color: rgba(0, 229, 255, 0.05); border-left: 2px solid var(--neon-cyan); }
+        .target-selected { background-color: rgba(0, 229, 255, 0.1); border-left: 2px solid var(--neon-cyan); }
+
         .crt::before {
-            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none;
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
+
+        .scanline-bg {
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan);
+            animation: scanmove 2s linear infinite; display: none;
+        }
+        @keyframes scanmove { 0% { top: 0%; } 100% { top: 100%; } }
+
+        .radar-spin { animation: radarSpin 2s linear infinite; }
+        @keyframes radarSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        .pkt-tab { padding: 2px 8px; border-radius: 4px; cursor: pointer; color: #666; }
-        .pkt-tab.active { background: rgba(189, 0, 255, 0.2); color: var(--neon-purple); border: 1px solid var(--neon-purple); }
-        .pkt-line { padding: 2px 4px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .pkt-line:hover { background: rgba(189, 0, 255, 0.1); }
-        .pkt-URL { color: var(--neon-cyan); }
-        .pkt-TCP { color: var(--neon-green); }
-        .pkt-UDP { color: var(--neon-purple); }
-        .pkt-ICMP { color: var(--neon-yellow); }
-        .pkt-CRITICAL { color: var(--neon-red); font-weight: bold; }
-        
-        .modal-bg { background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
+        .btn-cyber {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-cyber:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 15px currentColor;
+        }
+        .btn-cyber:active { transform: translateY(1px); }
     </style>
 </head>
 <body class="text-gray-300 h-screen flex flex-col overflow-hidden">
 
-    <!-- Packet Details Modal -->
-    <div id="packet-modal" class="fixed inset-0 modal-bg z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-3xl max-h-[80vh] flex flex-col rounded-lg border border-purple-500">
-            <div class="p-3 border-b border-gray-700 flex justify-between items-center bg-black/40">
-                <h3 class="text-sm font-bold text-purple-400" style="text-shadow: 0 0 5px var(--neon-purple);">PACKET INSPECTOR</h3>
-                <button onclick="closeModal()" class="text-red-400 hover:text-red-300 text-xs font-bold">[ X ] CLOSE</button>
-            </div>
-            <div id="modal-content" class="p-4 overflow-y-auto custom-scroll text-xs space-y-4">
-                <!-- Injected by JS -->
-            </div>
-        </div>
-    </div>
-
-    <header class="glass-panel border-b border-gray-800 p-3 flex justify-between items-center z-30">
+    <header class="glass-panel border-b border-gray-800 p-3 flex justify-between items-center z-30 relative">
         <div class="flex items-center space-x-4">
-            <h1 class="text-2xl font-black text-white tracking-widest" style="font-family: 'Arial Black', sans-serif; text-shadow: 0 0 10px rgba(189, 0, 255, 0.8);">MIRAGE</h1>
-            <span class="text-xs text-gray-500 tracking-widest hidden sm:block">MITM INTERCEPTION & ANALYTICAL ENGINE</span>
+            <h1 class="font-display text-2xl font-black text-white tracking-widest">VEKT</h1>
+            <span class="text-[10px] text-gray-500 tracking-[0.3em] hidden sm:block">VECTOR EXPLOITATION TOOLKIT</span>
         </div>
         <div class="flex items-center space-x-4 text-xs font-bold">
             <div class="glass-panel px-3 py-1 rounded-full flex items-center space-x-2">
                 <span class="text-gray-500">IFACE:</span>
-                <select id="interface-select" class="bg-transparent text-purple-400 focus:outline-none cursor-pointer appearance-none"></select>
+                <select id="interface-select" class="bg-transparent text-cyan-400 focus:outline-none cursor-pointer"></select>
             </div>
             <div class="flex items-center space-x-2 glass-panel px-3 py-1 rounded-full">
                 <div id="status-dot" class="w-2 h-2 rounded-full bg-gray-600"></div>
@@ -92,260 +102,125 @@
         </div>
     </header>
 
-    <div class="flex-1 flex p-3 overflow-hidden gap-3">
-        
-        <!-- Left Column (60%) -->
-        <div class="w-3/5 flex flex-col gap-3 h-full">
-            
-            <!-- Top: Hosts Table -->
-            <div class="flex-1 glass-panel rounded-lg overflow-hidden flex flex-col min-h-0">
+    <div class="flex-1 flex p-3 overflow-hidden">
+
+        <div class="w-3/5 flex flex-col space-y-3 mr-3">
+
+            <div id="scanline-bg" class="scanline-bg"></div>
+
+            <div class="flex-[3] flex flex-col glass-panel rounded-lg overflow-hidden relative">
                 <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-black/20">
-                    <h2 class="text-sm text-gray-400 tracking-wider" style="font-family: 'Arial Black', sans-serif;">DISCOVERED HOSTS</h2>
+                    <h2 id="view-title" class="font-display text-lg text-gray-400 tracking-wider">NETWORKS</h2>
                     <div class="flex space-x-2">
-                        <button id="btn-start" class="btn-cyber btn-start px-6 py-1 text-xs">START SCAN</button>
-                        <button id="btn-stop" class="btn-cyber btn-stop px-6 py-1 text-xs btn-disabled-fake">STOP</button>
+                        <button id="btn-back" class="btn-cyber px-4 py-1 bg-gray-800/50 text-gray-400 border border-gray-700 rounded text-xs hidden">← BACK</button>
+                        <button id="btn-start" class="btn-cyber px-6 py-1 bg-cyan-500 text-black font-bold rounded text-xs">START SCAN</button>
+                        <button id="btn-stop" class="btn-cyber px-6 py-1 bg-red-600/20 text-red-400 border border-red-600 font-bold rounded text-xs opacity-50 cursor-not-allowed">STOP</button>
                     </div>
                 </div>
                 <div class="flex-1 overflow-auto custom-scroll">
                     <table class="w-full text-xs">
                         <thead class="bg-black/50 sticky top-0 text-gray-500 backdrop-blur-sm">
                             <tr class="border-b border-gray-800">
-                                <th class="p-2 text-left tracking-widest text-[10px]">IP ADDRESS</th>
-                                <th class="p-2 text-left tracking-widest text-[10px]">HOSTNAME</th>
-                                <th class="p-2 text-left tracking-widest text-[10px]">VENDOR</th>
-                                <th class="p-2 text-center tracking-widest text-[10px]">ACTION</th>
+                                <th class="p-2 text-left tracking-widest text-[10px]">ESSID</th>
+                                <th class="p-2 text-left tracking-widest text-[10px]">BSSID</th>
+                                <th class="p-2 text-center tracking-widest text-[10px]">PWR</th>
+                                <th class="p-2 text-center tracking-widest text-[10px]">WPS / ACTION</th>
                             </tr>
                         </thead>
-                        <tbody id="hosts-body" class="text-gray-300">
-                            <tr><td colspan="4" class="p-8 text-center text-gray-500">Awaiting network scan...</td></tr>
-                        </tbody>
+                        <tbody id="targets-body" class="text-gray-300"></tbody>
+                        <tbody id="stations-body" class="text-gray-300 hidden"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Bottom: Packet Inspector -->
-            <div class="flex-1 glass-panel rounded-lg overflow-hidden flex flex-col min-h-0">
-                <div class="p-2 border-b border-gray-800 flex justify-between items-center bg-black/20">
-                    <div class="flex space-x-1 text-[10px] font-bold">
-                        <div class="pkt-tab active" data-filter="ALL">ALL</div>
-                        <div class="pkt-tab" data-filter="URL">URL</div>
-                        <div class="pkt-tab" data-filter="TCP">TCP</div>
-                        <div class="pkt-tab" data-filter="UDP">UDP</div>
-                        <div class="pkt-tab" data-filter="ICMP">ICMP</div>
-                    </div>
-                    <input id="pkt-search" type="text" placeholder="Search packets..." class="bg-black/40 text-[10px] px-2 py-1 rounded border border-gray-700 focus:outline-none focus:border-purple-500 w-40">
+            <div class="flex-[2] glass-panel rounded-lg p-4 overflow-y-auto custom-scroll">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-2">
+                    <h2 class="font-display text-lg text-gray-400 tracking-wider">TARGET INTEL</h2>
                 </div>
-                <div id="packet-viewer" class="flex-1 p-2 text-[11px] overflow-y-auto custom-scroll">
-> No packets captured yet...
+
+                <div class="grid grid-cols-2 gap-4 text-xs mb-4">
+                    <div>
+                        <span class="text-gray-500 block text-[10px] tracking-widest">ESSID</span>
+                        <span id="info-essid" class="text-white font-bold">None</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 block text-[10px] tracking-widest">BSSID</span>
+                        <span id="info-bssid" class="text-gray-400">None</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 block text-[10px] tracking-widest">CHANNEL</span>
+                        <span id="info-channel" class="text-gray-400">None</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 block text-[10px] tracking-widest">WPS STATUS</span>
+                        <span id="info-wps" class="text-gray-400">None</span>
+                    </div>
+                </div>
+
+                <div class="flex space-x-2 mb-3">
+                    <button id="btn-pixie" class="btn-cyber flex-1 px-4 py-2 bg-green-500/20 text-green-400 border border-green-500 font-bold rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed" disabled>Pixie-Dust</button>
+                    <button id="btn-brute" class="btn-cyber flex-1 px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500 font-bold rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed" disabled>Brute-Force</button>
+                    <button id="btn-evil-twin" class="btn-cyber flex-1 px-4 py-2 bg-purple-500/20 text-purple-400 border border-purple-500 font-bold rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed" disabled>Evil Twin</button>
+                </div>
+                <button id="btn-stop-wps" class="btn-cyber w-full px-4 py-2 bg-red-600 text-white font-bold rounded text-xs hidden mb-3">Stop WPS Attack</button>
+                <button id="btn-stop-hs" class="btn-cyber w-full px-4 py-2 bg-red-600 text-white font-bold rounded text-xs hidden mb-3">Stop Handshake Capture</button>
+                <button id="btn-stop-et" class="btn-cyber w-full px-4 py-2 bg-red-600 text-white font-bold rounded text-xs hidden mb-3">Stop Evil Twin</button>
+
+                <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div>
+                        <span class="text-gray-500 block text-[10px] tracking-widest">WPS PIN / STATUS</span>
+                        <span id="res-pin" class="neon-yellow font-bold break-all">------</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 block text-[10px] tracking-widest">WPA PSK / FILE</span>
+                        <span id="res-psk" class="neon-green font-bold break-all">------</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 block text-[10px] tracking-widest">CRACKED PASSWORD</span>
+                        <span id="res-password" class="neon-purple font-bold break-all">------</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 block text-[10px] tracking-widest">PORTAL PASSWORD</span>
+                        <span id="res-et-password" class="neon-purple font-bold break-all">------</span>
+                    </div>
+                    <div id="crack-controls" class="col-span-2 hidden">
+                        <span class="text-gray-500 block text-[10px] tracking-widest">WORDLIST</span>
+                        <input id="wordlist-path" type="text" value="/usr/share/wordlists/rockyou.txt" class="w-full bg-black/50 border border-gray-700 rounded px-2 py-1 text-[10px] text-gray-300 focus:outline-none focus:border-purple-500 mb-1">
+                        <div class="flex space-x-1">
+                            <button id="btn-crack" class="btn-cyber flex-1 px-2 py-1 bg-purple-500/20 text-purple-400 border border-purple-500 font-bold rounded text-[10px]">Crack Hashcat</button>
+                            <button id="btn-stop-crack" class="btn-cyber flex-1 px-2 py-1 bg-red-600 text-white font-bold rounded text-[10px] hidden">Stop</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column (40%) -->
-        <div class="w-2/5 flex flex-col gap-3 h-full">
-            
-            <!-- Traffic Graph Panel -->
-            <div class="glass-panel rounded-lg p-3 h-48 flex flex-col flex-shrink-0">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-sm text-gray-400 tracking-wider" style="font-family: 'Arial Black', sans-serif;">LIVE TRAFFIC</h2>
-                    <div class="flex space-x-4 text-[10px] font-bold">
-                        <span class="text-cyan-400">▼ DL: <span id="rx-speed">0.0</span> KB/s</span>
-                        <span class="text-purple-400">▲ UL: <span id="tx-speed">0.0</span> KB/s</span>
-                    </div>
-                </div>
-                <canvas id="traffic-canvas" class="w-full flex-1 bg-black/40 rounded"></canvas>
+        <div class="w-2/5 flex flex-col glass-panel rounded-lg overflow-hidden relative crt">
+            <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-black/20">
+                <h2 class="font-display text-lg text-gray-400 tracking-wider">LIVE CONSOLE</h2>
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
             </div>
-
-            <!-- Live Console -->
-            <div class="flex-1 glass-panel rounded-lg overflow-hidden relative crt min-h-0">
-                <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-black/20">
-                    <h2 class="text-sm text-gray-400 tracking-wider" style="font-family: 'Arial Black', sans-serif;">LIVE CONSOLE</h2>
-                </div>
-                <div id="console-output" class="p-3 text-xs neon-green whitespace-pre-wrap text-left h-full overflow-y-auto custom-scroll">
-> MIRAGE Engine Initialized.<br>
-> Select interface and start scanning.<br>
-                </div>
+            <div id="console-output" class="flex-1 overflow-y-auto custom-scroll text-xs neon-green p-3 whitespace-pre-wrap relative z-10 text-left">
+            > VEKT Engine Initialized.<br>
+            > Awaiting commands...<br>
             </div>
         </div>
     </div>
 
     <script>
-        const ws = new WebSocket("ws://localhost:9000/ws?token=V$j(Vqm,}XF,9i_|HZtL");
+        const ws = new WebSocket("ws://localhost:8000/ws?token=V$j(Vqm,}XF,9i_|HZtL");
         const consoleOutput = document.getElementById('console-output');
-        const packetViewer = document.getElementById('packet-viewer');
-        const pktSearch = document.getElementById('pkt-search');
-        let mitmTarget = null;
 
-        let packetDB = [];
-        let activeFilter = "ALL";
-        let searchQuery = "";
-
-        function renderPackets() {
-            const filtered = packetDB.filter(p => {
-                const matchType = (activeFilter === "ALL" || p.type === activeFilter);
-                const matchSearch = p.summary.toLowerCase().includes(searchQuery.toLowerCase());
-                return matchType && matchSearch;
-            });
-
-            if (filtered.length === 0) {
-                packetViewer.innerHTML = '> No matching packets found.';
-                return;
-            }
-
-            const toRender = filtered.slice(-200);
-            packetViewer.innerHTML = '';
-            toRender.forEach(p => {
-                const div = document.createElement('div');
-                div.className = `pkt-line pkt-${p.type}`;
-                div.innerText = p.summary;
-                div.onclick = () => showPacketDetails(p.id);
-                packetViewer.appendChild(div);
-            });
-            packetViewer.scrollTop = packetViewer.scrollHeight;
-        }
-
-        function showPacketDetails(id) {
-            const pkt = packetDB.find(p => p.id === id);
-            if (!pkt) return;
-            
-            const modalContent = document.getElementById('modal-content');
-            let html = `
-                <div class="mb-4">
-                    <span class="text-gray-500 text-[10px]">SUMMARY</span>
-                    <div class="text-cyan-400 mt-1">${pkt.summary}</div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="bg-black/40 p-2 rounded border border-gray-700">
-                        <span class="text-gray-500 text-[10px]">SOURCE</span>
-                        <div class="text-green-400 mt-1">${pkt.src_ip} <span class="text-gray-500">:${pkt.src_port || 'N/A'}</span></div>
-                    </div>
-                    <div class="bg-black/40 p-2 rounded border border-gray-700">
-                        <span class="text-gray-500 text-[10px]">DESTINATION</span>
-                        <div class="text-purple-400 mt-1">${pkt.dst_ip} <span class="text-gray-500">:${pkt.dst_port || 'N/A'}</span></div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-4 mb-4 text-center">
-                    <div class="bg-black/40 p-2 rounded border border-gray-700">
-                        <span class="text-gray-500 text-[10px]">PROTOCOL</span>
-                        <div class="text-yellow-400 mt-1">${pkt.type}</div>
-                    </div>
-                    <div class="bg-black/40 p-2 rounded border border-gray-700">
-                        <span class="text-gray-500 text-[10px]">LENGTH</span>
-                        <div class="text-white mt-1">${pkt.length} Bytes</div>
-                    </div>
-                    <div class="bg-black/40 p-2 rounded border border-gray-700">
-                        <span class="text-gray-500 text-[10px]">FLAGS</span>
-                        <div class="text-white mt-1">${pkt.flags || 'N/A'}</div>
-                    </div>
-                </div>
-            `;
-
-            if (pkt.payload_ascii && pkt.payload_ascii.trim().length > 0) {
-                html += `
-                    <div class="mt-4">
-                        <span class="text-gray-500 text-[10px]">PAYLOAD (ASCII)</span>
-                        <pre class="bg-black/60 p-2 rounded mt-1 text-green-400 whitespace-pre-wrap break-all border border-gray-700">${pkt.payload_ascii}</pre>
-                    </div>
-                `;
-            }
-
-            if (pkt.payload_hex && pkt.payload_hex.trim().length > 0) {
-                html += `
-                    <div class="mt-4">
-                        <span class="text-gray-500 text-[10px]">PAYLOAD (HEX)</span>
-                        <pre class="bg-black/60 p-2 rounded mt-1 text-purple-400 whitespace-pre-wrap break-all border border-gray-700">${pkt.payload_hex}</pre>
-                    </div>
-                `;
-            }
-
-            modalContent.innerHTML = html;
-            document.getElementById('packet-modal').classList.remove('hidden');
-            document.getElementById('packet-modal').classList.add('flex');
-        }
-
-        function closeModal() {
-            document.getElementById('packet-modal').classList.add('hidden');
-            document.getElementById('packet-modal').classList.remove('flex');
-        }
-
-        document.querySelectorAll('.pkt-tab').forEach(tab => {
-            tab.onclick = () => {
-                document.querySelectorAll('.pkt-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                activeFilter = tab.getAttribute('data-filter');
-                renderPackets();
-            };
-        });
-
-        pktSearch.oninput = () => {
-            searchQuery = pktSearch.value;
-            renderPackets();
-        };
-
-        // Smooth Traffic Graph Logic
-        const canvas = document.getElementById('traffic-canvas');
-        const ctx = canvas.getContext('2d');
-        let trafficData = [];
-        let targetRx = 0;
-        let targetTx = 0;
-
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function drawGraph() {
-            requestAnimationFrame(drawGraph);
-            const now = performance.now();
-            const pxPerSec = canvas.width / 60;
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.strokeStyle = 'rgba(189, 0, 255, 0.1)';
-            ctx.lineWidth = 1;
-            for (let i = 0; i < canvas.width; i += 20) {
-                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
-            }
-            for (let i = 0; i < canvas.height; i += 20) {
-                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
-            }
-
-            const maxVal = Math.max(...trafficData.map(p => Math.max(p.rx, p.tx)), 10);
-            const scale = (canvas.height - 10) / maxVal;
-
-            ctx.strokeStyle = '#00E5FF';
-            ctx.lineWidth = 2;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#00E5FF';
-            ctx.beginPath();
-            trafficData.forEach((p, i) => {
-                const x = canvas.width - ((now - p.time) / 1000) * pxPerSec;
-                const y = canvas.height - (p.rx * scale);
-                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            });
-            ctx.stroke();
-
-            ctx.strokeStyle = '#BD00FF';
-            ctx.shadowColor = '#BD00FF';
-            ctx.beginPath();
-            trafficData.forEach((p, i) => {
-                const x = canvas.width - ((now - p.time) / 1000) * pxPerSec;
-                const y = canvas.height - (p.tx * scale);
-                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            });
-            ctx.stroke();
-            ctx.shadowBlur = 0;
-        }
-        drawGraph();
+        let selectedBssid = null;
+        let isAttacking = false;
+        let isCracking = false;
 
         async function loadInterfaces() {
             const response = await fetch('/api/interfaces');
             const data = await response.json();
             const select = document.getElementById('interface-select');
             select.innerHTML = '';
-            data.interfaces.filter(i => !i.startsWith("lo")).forEach(iface => {
+            data.interfaces.forEach(iface => {
                 const option = document.createElement('option');
                 option.value = iface;
                 option.innerText = iface;
@@ -364,95 +239,249 @@
             if (msg.type === 'log') {
                 consoleOutput.innerHTML += `> ${msg.message}<br>`;
                 consoleOutput.scrollTop = consoleOutput.scrollHeight;
-            } 
-            else if (msg.type === 'packet') {
-                packetDB.push(msg.data);
-                if (packetDB.length > 1000) packetDB.shift();
-                renderPackets();
             }
-            else if (msg.type === 'hosts') {
-                renderHosts(msg.data);
+            else if (msg.type === 'targets') {
+                if (!selectedBssid) renderTargets(msg.data);
             }
-            else if (msg.type === 'traffic') {
-                document.getElementById('rx-speed').innerText = msg.rx;
-                document.getElementById('tx-speed').innerText = msg.tx;
-                trafficData.push({ time: performance.now(), rx: msg.rx, tx: msg.tx });
-                while (trafficData.length > 0 && performance.now() - trafficData[0].time > 60000) {
-                    trafficData.shift();
+            else if (msg.type === 'stations') {
+                if (selectedBssid && !isAttacking) renderStations(msg.data);
+            }
+            else if (msg.type === 'wps_success') {
+                if(msg.key_type === 'pin') document.getElementById('res-pin').innerText = msg.value;
+                if(msg.key_type === 'psk') {
+                    document.getElementById('res-psk').innerText = msg.value;
+                    stopAttackUI();
                 }
+            }
+            else if (msg.type === 'hs_success') {
+                document.getElementById('res-pin').innerText = "HANDSHAKE CAPTURED!";
+                document.getElementById('res-pin').className = "neon-green font-bold break-all";
+                document.getElementById('res-psk').innerText = msg.value;
+                document.getElementById('res-psk').className = "neon-green font-bold break-all";
+                document.getElementById('crack-controls').classList.remove('hidden');
+                stopAttackUI();
+            }
+            else if (msg.type === 'crack_success') {
+                document.getElementById('res-password').innerText = msg.value;
+                stopCrackUI();
+            }
+            else if (msg.type === 'et_success') {
+                document.getElementById('res-et-password').innerText = msg.value;
+                stopAttackUI();
+            }
+            else if (msg.type === 'clear_ui') {
+                selectedBssid = null;
+                isAttacking = false;
+                isCracking = false;
+                document.getElementById('targets-body').innerHTML = '';
+                document.getElementById('stations-body').innerHTML = '';
+                backToScan();
             }
         };
 
-        function renderHosts(data) {
-            const hostsBody = document.getElementById('hosts-body');
-            if (data.length === 0) {
-                hostsBody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-500">No active hosts found.</td></tr>`;
-                return;
-            }
-            hostsBody.innerHTML = '';
-            data.forEach(host => {
+        function renderTargets(data) {
+            const targetsBody = document.getElementById('targets-body');
+            targetsBody.innerHTML = '';
+            data.sort((a, b) => parseInt(b.signal_dbm) - parseInt(a.signal_dbm));
+            data.forEach(net => {
                 const tr = document.createElement('tr');
                 tr.className = 'target-row border-b border-gray-900/50';
-                tr.innerHTML = `
-                    <td class="p-2 font-bold text-white">${host.ip}</td>
-                    <td class="p-2 text-gray-400 text-[10px]">${host.hostname}</td>
-                    <td class="p-2 text-cyan-400 text-[10px]">${host.vendor}</td>
-                    <td class="p-2 text-center">
-                        <button onclick="toggleMitm('${host.ip}', '${host.mac}')" class="btn-cyber intercept-btn btn-intercept">INTERCEPT</button>
-                    </td>
-                `;
-                hostsBody.appendChild(tr);
+                const sigInt = parseInt(net.signal_dbm);
+                let pwrClass = 'neon-red';
+                if (sigInt >= -65) pwrClass = 'neon-green';
+                else if (sigInt >= -80) pwrClass = 'neon-yellow';
+                const wpsClass = net.wps_status === 'Unlocked' ? 'neon-green' : 'neon-red';
+                tr.innerHTML = `<td class="p-2 font-bold text-white">${net.essid}</td><td class="p-2 text-gray-500">${net.bssid}</td><td class="p-2 text-center ${pwrClass} font-bold">${net.signal_dbm}</td><td class="p-2 text-center ${wpsClass} font-bold">${net.wps_status}</td>`;
+                tr.onclick = () => selectTarget(net);
+                targetsBody.appendChild(tr);
             });
         }
 
-        window.toggleMitm = function(ip, mac) {
-            const buttons = document.querySelectorAll('.intercept-btn');
-            const clickedButton = event.target;
-
-            if (mitmTarget === ip) {
-                ws.send(JSON.stringify({action: 'stop_mitm'}));
-                mitmTarget = null;
-                clickedButton.classList.remove('btn-intercept-active');
-                clickedButton.classList.add('btn-intercept');
-                clickedButton.innerText = 'INTERCEPT';
-                document.getElementById('status-text').innerText = 'IDLE';
-                document.getElementById('status-text').className = 'text-gray-500';
-                document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-gray-600';
+        function renderStations(data) {
+            const stationsBody = document.getElementById('stations-body');
+            let html = '';
+            if (data.length === 0) {
+                html += `<tr><td colspan="4" class="p-8 text-center text-gray-500 animate-pulse">Waiting for connected devices...</td></tr>`;
             } else {
-                buttons.forEach(btn => {
-                    btn.classList.remove('btn-intercept-active');
-                    btn.classList.add('btn-intercept');
-                    btn.innerText = 'INTERCEPT';
+                data.forEach(st => {
+                    html += `<tr class="target-row border-b border-gray-900/50">
+                        <td class="p-2 text-white">${st.mac}</td>
+                        <td></td>
+                        <td class="p-2 text-center neon-yellow font-bold">${st.pwr}</td>
+                        <td class="p-2 text-center"><button onclick="startDeauth('${st.mac}')" class="btn-cyber px-3 py-1 bg-red-600 text-white text-[10px] rounded hover:bg-red-500 font-bold">⚡ CAPTURE</button></td>
+                    </tr>`;
                 });
-                
-                mitmTarget = ip;
-                clickedButton.classList.remove('btn-intercept');
-                clickedButton.classList.add('btn-intercept-active');
-                clickedButton.innerText = 'STOP MITM';
-                
-                ws.send(JSON.stringify({action: 'start_mitm', target_ip: ip, target_mac: mac}));
-                document.getElementById('status-text').innerText = 'INTERCEPTING';
-                document.getElementById('status-text').className = 'text-red-400';
-                document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-red-500 animate-pulse';
             }
-        };
+            stationsBody.innerHTML = html;
+        }
+
+        function selectTarget(net) {
+            selectedBssid = net.bssid;
+            isAttacking = false;
+            isCracking = false;
+
+            document.getElementById('view-title').innerText = "CONNECTED STATIONS";
+            document.getElementById('btn-back').classList.remove('hidden');
+            document.getElementById('btn-start').classList.add('hidden');
+            document.getElementById('btn-stop').classList.add('hidden');
+            document.getElementById('scanline-bg').style.display = 'none';
+
+            document.getElementById('targets-body').classList.add('hidden');
+            document.getElementById('stations-body').classList.remove('hidden');
+
+            document.getElementById('info-essid').innerText = net.essid;
+            document.getElementById('info-bssid').innerText = net.bssid;
+            document.getElementById('info-channel').innerText = net.channel;
+            document.getElementById('info-wps').innerText = net.wps_status;
+            document.getElementById('info-wps').className = net.wps_status === 'Unlocked' ? 'neon-green font-bold' : 'neon-red font-bold';
+
+            document.getElementById('res-pin').innerText = '------';
+            document.getElementById('res-pin').className = "neon-yellow font-bold break-all";
+            document.getElementById('res-psk').innerText = '------';
+            document.getElementById('res-psk').className = "neon-green font-bold break-all";
+            document.getElementById('res-password').innerText = '------';
+            document.getElementById('res-et-password').innerText = '------';
+            document.getElementById('crack-controls').classList.add('hidden');
+
+            document.getElementById('btn-pixie').disabled = false;
+            document.getElementById('btn-brute').disabled = false;
+            document.getElementById('btn-evil-twin').disabled = false;
+
+            document.getElementById('btn-pixie').classList.remove('hidden');
+            document.getElementById('btn-brute').classList.remove('hidden');
+            document.getElementById('btn-evil-twin').classList.remove('hidden');
+            document.getElementById('btn-stop-wps').classList.add('hidden');
+            document.getElementById('btn-stop-hs').classList.add('hidden');
+            document.getElementById('btn-stop-et').classList.add('hidden');
+
+            document.getElementById('status-text').innerText = 'FOCUSED';
+            document.getElementById('status-text').className = 'text-yellow-400';
+            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-yellow-500 animate-pulse';
+
+            ws.send(JSON.stringify({action: 'select_target', bssid: net.bssid}));
+        }
+
+        function backToScan() {
+            selectedBssid = null;
+            isAttacking = false;
+            isCracking = false;
+            document.getElementById('view-title').innerText = "NETWORKS";
+            document.getElementById('btn-back').classList.add('hidden');
+            document.getElementById('btn-start').classList.remove('hidden');
+            document.getElementById('btn-stop').classList.remove('hidden');
+            document.getElementById('targets-body').classList.remove('hidden');
+            document.getElementById('stations-body').classList.add('hidden');
+            ws.send(JSON.stringify({action: 'back_to_scan'}));
+        }
+
+        document.getElementById('btn-back').onclick = backToScan;
 
         document.getElementById('btn-start').onclick = () => {
-            ws.send(JSON.stringify({action: 'start_scan'}));
+            ws.send(JSON.stringify({action: 'start_recon'}));
+            document.getElementById('scanline-bg').style.display = 'block';
             document.getElementById('status-text').innerText = 'SCANNING';
-            document.getElementById('status-text').className = 'text-purple-400';
-            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-purple-500 animate-pulse';
-            document.getElementById('btn-start').classList.add('btn-disabled-fake');
-            document.getElementById('btn-stop').classList.remove('btn-disabled-fake');
+            document.getElementById('status-text').className = 'text-cyan-400';
+            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-cyan-500 animate-pulse';
+            document.getElementById('btn-start').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btn-stop').classList.remove('opacity-50', 'cursor-not-allowed');
         };
 
         document.getElementById('btn-stop').onclick = () => {
-            ws.send(JSON.stringify({action: 'stop_scan'}));
+            ws.send(JSON.stringify({action: 'stop_recon'}));
+            document.getElementById('scanline-bg').style.display = 'none';
             document.getElementById('status-text').innerText = 'IDLE';
             document.getElementById('status-text').className = 'text-gray-500';
             document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-gray-600';
-            document.getElementById('btn-start').classList.remove('btn-disabled-fake');
-            document.getElementById('btn-stop').classList.add('btn-disabled-fake');
+            document.getElementById('btn-start').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btn-stop').classList.add('opacity-50', 'cursor-not-allowed');
+        };
+
+        function startAttackUI() {
+            isAttacking = true;
+            document.getElementById('btn-pixie').classList.add('hidden');
+            document.getElementById('btn-brute').classList.add('hidden');
+            document.getElementById('btn-evil-twin').classList.add('hidden');
+            document.getElementById('status-text').innerText = 'ATTACKING';
+            document.getElementById('status-text').className = 'text-red-400';
+            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-red-500 animate-pulse';
+        }
+
+        function stopAttackUI() {
+            isAttacking = false;
+            document.getElementById('btn-pixie').classList.remove('hidden');
+            document.getElementById('btn-brute').classList.remove('hidden');
+            document.getElementById('btn-evil-twin').classList.remove('hidden');
+            document.getElementById('btn-stop-wps').classList.add('hidden');
+            document.getElementById('btn-stop-hs').classList.add('hidden');
+            document.getElementById('btn-stop-et').classList.add('hidden');
+            document.getElementById('status-text').innerText = 'FOCUSED';
+            document.getElementById('status-text').className = 'text-yellow-400';
+            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-yellow-500 animate-pulse';
+        }
+
+        document.getElementById('btn-pixie').onclick = () => {
+            if(!selectedBssid || isAttacking) return;
+            startAttackUI();
+            document.getElementById('btn-stop-wps').classList.remove('hidden');
+            ws.send(JSON.stringify({action: 'start_wps', mode: 'pixie'}));
+        };
+        document.getElementById('btn-brute').onclick = () => {
+            if(!selectedBssid || isAttacking) return;
+            startAttackUI();
+            document.getElementById('btn-stop-wps').classList.remove('hidden');
+            ws.send(JSON.stringify({action: 'start_wps', mode: 'bruteforce'}));
+        };
+        document.getElementById('btn-stop-wps').onclick = () => {
+            ws.send(JSON.stringify({action: 'stop_wps'}));
+            stopAttackUI();
+        };
+
+        window.startDeauth = function(mac) {
+            if(!selectedBssid || isAttacking) return;
+            startAttackUI();
+            document.getElementById('btn-stop-hs').classList.remove('hidden');
+            ws.send(JSON.stringify({action: 'start_deauth', client_mac: mac}));
+        };
+
+        document.getElementById('btn-stop-hs').onclick = () => {
+            ws.send(JSON.stringify({action: 'stop_handshake'}));
+            stopAttackUI();
+        };
+
+        document.getElementById('btn-evil-twin').onclick = () => {
+            if(!selectedBssid || isAttacking) return;
+            startAttackUI();
+            document.getElementById('btn-stop-et').classList.remove('hidden');
+            document.getElementById('status-text').innerText = 'EVIL TWIN';
+            document.getElementById('status-text').className = 'text-purple-400';
+            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-purple-500 animate-pulse';
+            ws.send(JSON.stringify({action: 'start_evil_twin'}));
+        };
+
+        document.getElementById('btn-stop-et').onclick = () => {
+            ws.send(JSON.stringify({action: 'stop_evil_twin'}));
+            stopAttackUI();
+        };
+
+        function stopCrackUI() {
+            isCracking = false;
+            document.getElementById('btn-crack').classList.remove('hidden');
+            document.getElementById('btn-stop-crack').classList.add('hidden');
+        }
+
+        document.getElementById('btn-crack').onclick = () => {
+            if(isCracking) return;
+            isCracking = true;
+            const wordlist = document.getElementById('wordlist-path').value;
+            const cap_file = document.getElementById('res-psk').innerText;
+            ws.send(JSON.stringify({action: 'start_crack', wordlist: wordlist, cap_file: cap_file}));
+            document.getElementById('btn-crack').classList.add('hidden');
+            document.getElementById('btn-stop-crack').classList.remove('hidden');
+        };
+
+        document.getElementById('btn-stop-crack').onclick = () => {
+            ws.send(JSON.stringify({action: 'stop_crack'}));
+            stopCrackUI();
         };
     </script>
 </body>
