@@ -133,24 +133,29 @@ Once running, open your browser and navigate to:
 
 ---
 
----
+## 🆕 What's New in v2.0? (Major Update)
+### 🧹 Massive Dependencies Cleanup:
+Reduced requirements.txt from over 700 unnecessary packages to just 3 core dependencies, making installation 10x faster and lighter.
 
-🆕 What's New in v2.0? (Major Update)
-🧹 Massive Dependencies Cleanup: Reduced requirements.txt from over 700 unnecessary packages to just 3 core dependencies, making installation 10x faster and lighter.
+### 🔧 Critical Network Restoration: Added automatic restoration of NetworkManager, wpa_supplicant, and managed interface mode upon stopping, preventing permanent Wi-Fi disconnections.
 
-🔧 Critical Network Restoration: Added automatic restoration of NetworkManager, wpa_supplicant, and managed interface mode upon stopping, preventing permanent Wi-Fi disconnections.
+### 🔒 WebSocket Security:
+Implemented mandatory token authentication for the WebSocket endpoint to prevent unauthorized local network access.
 
-🔒 WebSocket Security: Implemented mandatory token authentication for the WebSocket endpoint to prevent unauthorized local network access.
+### ⚡ Zero UI Freezing:
+Migrated engine stop functions to asyncio.to_thread(), ensuring the Web UI remains 100% responsive during heavy wireless operations.
 
-⚡ Zero UI Freezing: Migrated engine stop functions to asyncio.to_thread(), ensuring the Web UI remains 100% responsive during heavy wireless operations.
+### 🛡️ Complete Thread Safety:
+Replaced unsafe boolean flags with threading.Event() and asyncio.Lock to eliminate race conditions and engine overlaps.
 
-🛡️ Complete Thread Safety: Replaced unsafe boolean flags with threading.Event() and asyncio.Lock to eliminate race conditions and engine overlaps.
+### 🐛 Transparent Error Handling:
+Removed silent except: blocks; all errors and attack statuses are now clearly logged in the dashboard.
 
-🐛 Transparent Error Handling: Removed silent except: blocks; all errors and attack statuses are now clearly logged in the dashboard.
+### 🧠 Smarter Attack Management:
+Fixed the silent ignore pattern (if engine: continue); users now receive clear warnings if an attack is already running.
 
-🧠 Smarter Attack Management: Fixed the silent ignore pattern (if engine: continue); users now receive clear warnings if an attack is already running.
-
-📡 Evil Twin Portal Fix: Improved the smart router logic for the captive portal to handle attacker/victim routing more reliably without hardcoded IP conflicts.
+### 📡 Evil Twin Portal Fix:
+Improved the smart router logic for the captive portal to handle attacker/victim routing more reliably without hardcoded IP conflicts.
 
 ---
 
