@@ -1,92 +1,96 @@
 <div align="center">
-# M I R A G E
-### MITM Interception, Routing & Analytical Graph Engine
+# V E K T | Vector Exploitation & Kill Toolkit
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Web%20UI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Tested%20On-Android%2013%20%7C%20Win%2011%20%7C%20Linux-darkgreen)]()
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Kali%20%7C%20Parrot-darkgreen?logo=linux&logoColor=white)]()
+[![UI](https://img.shields.io/badge/UI-Cyberpunk%20Theme-%2300E5FF?logo=tailwindcss&logoColor=white)]()
 
-**A powerful, stealth-first Man-in-the-Middle (MITM) framework with a built-in Wireshark-style packet inspector.**
+**A modern, web-driven wireless auditing framework.**
 
-*Invisible to the victim. Zero internet drops. Pure interceptive power.*
+*Stop juggling multiple terminal tabs. Command the airwaves from a single, sleek dashboard.*
 </div>
 
 ---
 
 ## ⚠️ Disclaimer
 
-**MIRAGE** is designed for authorized security auditing, educational purposes, and network analysis.
-Attacking networks without explicit permission from the owner is illegal. The developer assumes no liability and is not responsible for any misuse or damage caused by this program.
+**VEKT** is designed for authorized security auditing, educational purposes, and CTF challenges only.
+Attacking wireless networks without explicit permission from the owner is illegal. The developer assumes no liability and is not responsible for any misuse or damage caused by this program.
 
 ---
 
 ## 🚀 Overview
 
-Most MITM tools disrupt the victim's connection, triggering OS-level warnings (like the infamous Android `!` icon). **MIRAGE** is built differently.
+Most wireless testing tools require running multiple CLI commands across different terminal tabs (`airodump` here, `aireplay` there, `reaver` somewhere else). **VEKT** solves this by bringing the entire `aircrack-ng` suite and WPS attack vectors into a single, dark-themed, web-based graphical interface.
 
-By implementing a **Transparent Bridge Architecture** (using kernel-level IP forwarding and custom `iptables`/`rp_filter` tuning), MIRAGE slips into the traffic stream completely unnoticed. It doesn't NAT the traffic; it silently passes it through while analyzing every byte with zero latency.
-
-Tested extensively and confirmed **invisible** on:
-- 📱 **Android 13** (No captive portal triggers, no connection drops)
-- 💻 **Windows 11** (No network warnings)
-- 🐧 **Linux** (Seamless routing)
-
-## ✨ Features
-
-### 🕵️ 1. Stealth-First Interception
-- **Transparent Bridge Mode:** Bypasses OS security checks without altering packet headers.
-- **ARP Spoofing Engine:** High-speed, dual-direction spoofing that keeps the victim's ARP cache poisoned without flooding the network.
-
-### 📊 2. Live Analytical Dashboard
-- **Real-time Traffic Graph:** Smooth, 60FPS Canvas-based graph showing Download/Upload speeds in KB/s.
-- **Target History:** Live extraction of visited URLs (DNS queries) for quick profiling.
-
-### 🔬 3. Integrated Packet Inspector
-- **Wireshark-Style Analysis:** Click on any packet in the live stream to open a detailed modal.
-- **Deep Dive:** View Source/Destination IPs, Ports, TCP Flags, and Payloads in both **ASCII** and **HEX** formats.
-- **Smart Filtering:** Instantly filter packets by protocol (TCP, UDP, ICMP, URL) or search through payloads with a live search bar.
-
-### 🧠 4. Credential Harvesting
-- Automatically extracts plaintext HTTP credentials (usernames, passwords) from POST requests.
-- Saves all captured credentials to an isolated file inside the `logs/` directory.
-
----
+Built with a decoupled architecture (FastAPI Backend + HTML/JS Frontend) and an **Offline-First design**, VEKT ensures smooth execution without UI freezing, providing real-time terminal logs directly inside the browser. You can run it on a laptop or Raspberry Pi in your backpack and control the attacks from your smartphone!
 
 ## 📸 Screenshots
 
 <div align="center">
-
-**1. Main Dashboard & Live Traffic Graph**
-
-![MIRAGE Dashboard](SCREENSHOT_LINK_1_HERE)
-
-**2. Packet Inspector & Deep Payload Analysis**
-
-![MIRAGE Packet Inspector](SCREENSHOT_LINK_2_HERE)
-
-**3. Protocol Filtering & Live Search**
-
-![MIRAGE Filtering](SCREENSHOT_LINK_3_HERE)
+<img width="1920" height="1080" alt="d" src="https://github.com/user-attachments/assets/8fbcb1ae-cb07-47d7-a745-a72046dac155" />
+<img width="1920" height="1080" alt="c" src="https://github.com/user-attachments/assets/f2b9b515-a76f-4fc0-ba6c-b6d82083f3f4" />
+<img width="1920" height="1080" alt="b" src="https://github.com/user-attachments/assets/bd43db38-e3be-47e3-93ea-1bb995298683" />
+<img width="1920" height="1080" alt="a" src="https://github.com/user-attachments/assets/ff7ddfe5-1eea-4ffc-8751-a40f4b7dfe82" />
 
 </div>
 
 ---
 
+## ✨ Features
+
+### 🗺️ 1. Recon & Target Intel
+- Live scanning of 2.4GHz networks using `airodump-ng` and `wash`.
+- Automatic WPS Lock status detection.
+- Focused target monitoring: Select a network to instantly discover connected client stations.
+- Sortable target list with color-coded signal strength (dBm).
+
+### 🔓 2. WPS Exploitation
+- **Pixie-Dust Attack:** Automated offline WPS PIN extraction (`reaver -K 1`).
+- **PIN Brute-Force:** Targeted brute-force attacks with lockout detection.
+- Real-time logging of the Reaver output directly into the UI.
+
+### 🤝 3. Handshake Capture (WPA/WPA2)
+- Targeted network locking and channel hopping.
+- Client/Station discovery.
+- **Automated Deauth Loop:** Sends continuous deauth packets to targeted clients to force handshake capture.
+- Real-time EAPOL detection. Automatically stops the attack once the handshake is captured.
+- Exports `.cap` files ready for cracking.
+
+### 🧠 4. Offline Cracking
+- One-click conversion of `.cap` files to Hashcat format (`hc22000`) using `hcxpcapngtool`.
+- Integrated `hashcat` execution with live progress status directly in the web console.
+
+### 👥 5. Evil Twin (Rogue AP) - 🚧 Work In Progress
+- Clones target ESSID and channel using `hostapd`.
+- Continuous deauth of the original AP via virtual interfaces to force client migration.
+- `dnsmasq` integration for DNS hijacking.
+- Built-in Captive Portal to phish WPA passwords.
+
+> **Note:** The Evil Twin feature is currently in the experimental phase and under active development. Due to the complexities of single-interface routing, captive portals, and driver compatibility, it might not perform flawlessly in all environments yet. Use it with caution and expect potential bugs.
+
+---
+
 ## 🛠️ Architecture
 
-MIRAGE uses a decoupled architecture (FastAPI Backend + HTML/JS Frontend). It relies on `tcpdump` for kernel-level PCAP capture (zero latency) and `Scapy` for real-time payload analysis.
+VEKT uses a modular Producer-Consumer pattern to ensure the Web UI never freezes during intensive wireless operations. The UI runs entirely offline using a local Tailwind CSS engine.
 
 ```text
-mirage/
-├── main.py # FastAPI Web Server & WebSocket Manager
+vekt/
+├── main.py # FastAPI Web Server, WebSocket Manager & Captive Portal
 ├── requirements.txt
 ├── static/
-│   └── index.html # Cyberpunk Web UI (Tailwind CSS + Vanilla JS)
-└── core/ # Backend Engine
-    ├── network.py # Nmap Network Scanner logic
-    ├── mitm.py # Stealth ARP Spoofer
-    └── sniffer.py # Packet Analyzer & Traffic Calculator
+│   ├── index.html # Cyberpunk Web UI (Tailwind CSS + Vanilla JS)
+│   └── tailwind.js # Local Tailwind v3 Engine (Offline support)
+└── core/ # Backend Engine (The Brains)
+    ├── recon.py # Wardriving & Target Scanning logic
+    └── attacks/ # Attack Modules
+        ├── wps_attack.py
+        ├── handshake.py
+        ├── cracker.py
+        └── evil_twin.py
 ```
 
 ---
@@ -95,7 +99,7 @@ mirage/
 
 ### Prerequisites
 - Linux environment (Kali, Parrot, or Arch recommended)
-- Wireless/Wired card supporting **Promiscuous Mode**
+- Wireless card supporting **Monitor Mode** & **Packet Injection**
 - Root privileges
 
 ### System Dependencies
@@ -103,14 +107,14 @@ You must have the underlying CLI tools installed:
 
 ```bash
 sudo apt update
-sudo apt install nmap tcpdump iptables iproute2
+sudo apt install aircrack-ng reaver hashcat hcxtools hostapd dnsmasq iw
 ```
 
 ### Python Setup
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/mirage.git
-cd mirage
+git clone https://github.com/itsBONSAW/vekt.git
+cd vekt
 pip install -r requirements.txt
 ```
 
@@ -118,32 +122,25 @@ pip install -r requirements.txt
 
 ## 💻 Usage
 
-Run MIRAGE with root privileges:
+Run VEKT with root privileges:
 
 ```bash
 sudo python3 main.py
 ```
 
 Once running, open your browser and navigate to:
-`http://localhost:9000`
-
-1. Select your network interface.
-2. Click **START SCAN** to discover hosts on the LAN.
-3. Click **INTERCEPT** on your target.
-4. Watch the traffic graph move and analyze packets in real-time!
+`http://localhost:8000` (or `http://<your-ip>:8000` to control it remotely).
 
 ---
 
 ## 🤝 Acknowledgements
 
-I want to be completely transparent about the development process of MIRAGE. A significant portion of this tool's architecture, backend Python logic, and the cyberpunk-themed frontend were designed and written with the assistance of an AI language model. It acted as an incredible co-pilot, helping to debug complex threading issues, optimize the transparent bridge routing, and design the UI.
+I want to be completely transparent about the development process of VEKT. A significant portion of this tool's architecture, backend Python logic, and the cyberpunk-themed frontend were designed and written with the assistance of an AI language model. It acted as an incredible co-pilot, helping to debug complex threading issues, integrate FastAPI with WebSockets, and design the UI.
 
-Thank you to the AI for making this project come to life so rapidly.
+Thank you to the AI for making this project come to life so rapidly. To human contributors: feel free to fork, modify, and improve upon this foundation.
 
 ---
 
 <div align="center">
-Made by **[Your Name/GitHub Username]** & AI
-<br>
-<sub>Stay invisible. Happy Hacking.</sub>
+<sub>Happy Hacking.</sub>
 </div>
