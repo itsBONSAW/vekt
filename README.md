@@ -1,3 +1,6 @@
+<img width="1280" height="720" alt="b27b6a7e-7971-4adb-97e4-060bb7283f8c" src="https://github.com/user-attachments/assets/8cc6bd8d-71c9-4aba-a377-2d374ecae7bf" />
+
+
 <div align="center">
 
 # V E K T
@@ -110,6 +113,9 @@ It is designed to run locally on Linux and can operate entirely without an exter
 
 <div align="center">
 
+
+![Uploading c.jpg…]()
+<img width="1920" height="1080" alt="d" src="https://github.com/user-attachments/assets/520d93b0-6f02-4ea8-a2f5-07d5066abc2f" />
 
 
 </div>
