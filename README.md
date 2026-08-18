@@ -113,6 +113,9 @@ It is designed to run locally on Linux and can operate entirely without an exter
 
 <div align="center">
 
+<img width="1920" height="1080" alt="a" src="https://github.com/user-attachments/assets/26fdf1da-ef3c-47ab-a167-d1327950cfbc" />
+<img width="1920" height="1080" alt="b" src="https://github.com/user-attachments/assets/41b75966-2443-44e8-a1ce-849dd38d001c" />
+<img width="1920" height="1080" alt="c" src="https://github.com/user-attachments/assets/ce71cde8-ff98-46c4-a4f8-a3e81c4b2926" />
 <img width="1920" height="1080" alt="d" src="https://github.com/user-attachments/assets/520d93b0-6f02-4ea8-a2f5-07d5066abc2f" />
 
 </div>
