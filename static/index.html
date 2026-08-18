@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VEKT - Wireless Exploitation Toolkit</title>
-    <script src="static/tailwind.js"></script>
+    <script src="/static/tailwind.js"></script>
+
     <style>
         :root {
             --neon-cyan: #00E5FF;
@@ -14,475 +15,2099 @@
             --neon-purple: #BD00FF;
             --bg-dark: #050507;
         }
-        
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', monospace;
+            font-family: "DejaVu Sans Mono", "Liberation Mono", "Consolas", monospace;
             background-color: var(--bg-dark);
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
             overflow: hidden;
-            text-align: left;
         }
-        
-        .font-display { font-family: 'DejaVu Sans', 'Arial Black', sans-serif; font-weight: 900; }
-        
+
+        .font-display {
+            font-family: "DejaVu Sans", "Arial Black", sans-serif;
+            font-weight: 900;
+        }
+
         .glass-panel {
-            background: rgba(10, 10, 12, 0.7);
+            background: rgba(10, 10, 12, 0.72);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
-        
-        .neon-cyan { color: var(--neon-cyan); text-shadow: 0 0 10px var(--neon-cyan); }
-        .neon-green { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
-        .neon-red { color: var(--neon-red); text-shadow: 0 0 8px var(--neon-red); }
-        .neon-yellow { color: var(--neon-yellow); text-shadow: 0 0 8px var(--neon-yellow); }
-        .neon-purple { color: var(--neon-purple); text-shadow: 0 0 8px var(--neon-purple); }
 
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0); }
-        .custom-scroll::-webkit-scrollbar-thumb { background: var(--neon-cyan); opacity: 0.5; border-radius: 2px; }
+        .neon-cyan {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
 
-        .target-row { transition: all 0.2s ease; border-left: 2px solid transparent; }
-        .target-row:hover { background-color: rgba(0, 229, 255, 0.05); border-left: 2px solid var(--neon-cyan); }
-        .target-selected { background-color: rgba(0, 229, 255, 0.1); border-left: 2px solid var(--neon-cyan); }
+        .neon-green {
+            color: var(--neon-green);
+            text-shadow: 0 0 8px var(--neon-green);
+        }
+
+        .neon-red {
+            color: var(--neon-red);
+            text-shadow: 0 0 8px var(--neon-red);
+        }
+
+        .neon-yellow {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 8px var(--neon-yellow);
+        }
+
+        .neon-purple {
+            color: var(--neon-purple);
+            text-shadow: 0 0 8px var(--neon-purple);
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 2px;
+        }
+
+        .target-row {
+            transition:
+                background-color 0.15s ease,
+                border-color 0.15s ease,
+                transform 0.15s ease;
+            border-left: 2px solid transparent;
+        }
+
+        .target-row:hover {
+            background-color: rgba(0, 229, 255, 0.05);
+            border-left-color: var(--neon-cyan);
+        }
+
+        .target-selected {
+            background-color: rgba(0, 229, 255, 0.10);
+            border-left-color: var(--neon-cyan);
+        }
 
         .crt::before {
-            content: " ";
-            display: block;
+            content: "";
             position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            inset: 0;
+            background:
+                linear-gradient(
+                    rgba(18, 16, 16, 0) 50%,
+                    rgba(0, 0, 0, 0.25) 50%
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255, 0, 0, 0.06),
+                    rgba(0, 255, 0, 0.02),
+                    rgba(0, 0, 255, 0.06)
+                );
             z-index: 2;
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
         }
 
         .scanline-bg {
-            position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan);
-            animation: scanmove 2s linear infinite; display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            animation: scanmove 2s linear infinite;
+            display: none;
+            z-index: 10;
         }
-        @keyframes scanmove { 0% { top: 0%; } 100% { top: 100%; } }
 
-        .radar-spin { animation: radarSpin 2s linear infinite; }
-        @keyframes radarSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
+        @keyframes scanmove {
+            0% {
+                top: 0%;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
         .btn-cyber {
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                opacity 0.18s ease;
         }
-        .btn-cyber:hover {
+
+        .btn-cyber:hover:not(:disabled) {
             transform: translateY(-1px);
             box-shadow: 0 0 15px currentColor;
         }
-        .btn-cyber:active { transform: translateY(1px); }
+
+        .btn-cyber:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .btn-cyber:disabled {
+            opacity: 0.28;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .state-dot {
+            transition:
+                background-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .table-empty {
+            height: 150px;
+        }
+
+        .console-line {
+            line-height: 1.5;
+        }
+
+        .truncate-cell {
+            max-width: 260px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
-<body class="text-gray-300 h-screen flex flex-col overflow-hidden">
 
-    <header class="glass-panel border-b border-gray-800 p-3 flex justify-between items-center z-30 relative">
-        <div class="flex items-center space-x-4">
-            <h1 class="font-display text-2xl font-black text-white tracking-widest">VEKT</h1>
-            <span class="text-[10px] text-gray-500 tracking-[0.3em] hidden sm:block">VECTOR EXPLOITATION TOOLKIT</span>
-        </div>
-        <div class="flex items-center space-x-4 text-xs font-bold">
-            <div class="glass-panel px-3 py-1 rounded-full flex items-center space-x-2">
-                <span class="text-gray-500">IFACE:</span>
-                <select id="interface-select" class="bg-transparent text-cyan-400 focus:outline-none cursor-pointer"></select>
-            </div>
-            <div class="flex items-center space-x-2 glass-panel px-3 py-1 rounded-full">
-                <div id="status-dot" class="w-2 h-2 rounded-full bg-gray-600"></div>
-                <span id="status-text" class="text-gray-500">IDLE</span>
-            </div>
-        </div>
-    </header>
+<body class="text-gray-300 h-screen flex flex-col">
 
-    <div class="flex-1 flex p-3 overflow-hidden">
+<header class="glass-panel border-b border-gray-800 px-3 py-3 flex justify-between items-center z-30">
+    <div class="flex items-center space-x-4 min-w-0">
+        <h1 class="font-display text-2xl font-black text-white tracking-widest">
+            VEKT
+        </h1>
 
-        <div class="w-3/5 flex flex-col space-y-3 mr-3">
-
-            <div id="scanline-bg" class="scanline-bg"></div>
-
-            <div class="flex-[3] flex flex-col glass-panel rounded-lg overflow-hidden relative">
-                <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-black/20">
-                    <h2 id="view-title" class="font-display text-lg text-gray-400 tracking-wider">NETWORKS</h2>
-                    <div class="flex space-x-2">
-                        <button id="btn-back" class="btn-cyber px-4 py-1 bg-gray-800/50 text-gray-400 border border-gray-700 rounded text-xs hidden">← BACK</button>
-                        <button id="btn-start" class="btn-cyber px-6 py-1 bg-cyan-500 text-black font-bold rounded text-xs">START SCAN</button>
-                        <button id="btn-stop" class="btn-cyber px-6 py-1 bg-red-600/20 text-red-400 border border-red-600 font-bold rounded text-xs opacity-50 cursor-not-allowed">STOP</button>
-                    </div>
-                </div>
-                <div class="flex-1 overflow-auto custom-scroll">
-                    <table class="w-full text-xs">
-                        <thead class="bg-black/50 sticky top-0 text-gray-500 backdrop-blur-sm">
-                            <tr class="border-b border-gray-800">
-                                <th class="p-2 text-left tracking-widest text-[10px]">ESSID</th>
-                                <th class="p-2 text-left tracking-widest text-[10px]">BSSID</th>
-                                <th class="p-2 text-center tracking-widest text-[10px]">PWR</th>
-                                <th class="p-2 text-center tracking-widest text-[10px]">WPS / ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody id="targets-body" class="text-gray-300"></tbody>
-                        <tbody id="stations-body" class="text-gray-300 hidden"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="flex-[2] glass-panel rounded-lg p-4 overflow-y-auto custom-scroll">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-2">
-                    <h2 class="font-display text-lg text-gray-400 tracking-wider">TARGET INTEL</h2>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 text-xs mb-4">
-                    <div>
-                        <span class="text-gray-500 block text-[10px] tracking-widest">ESSID</span>
-                        <span id="info-essid" class="text-white font-bold">None</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500 block text-[10px] tracking-widest">BSSID</span>
-                        <span id="info-bssid" class="text-gray-400">None</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500 block text-[10px] tracking-widest">CHANNEL</span>
-                        <span id="info-channel" class="text-gray-400">None</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500 block text-[10px] tracking-widest">WPS STATUS</span>
-                        <span id="info-wps" class="text-gray-400">None</span>
-                    </div>
-                </div>
-
-                <div class="flex space-x-2 mb-3">
-                    <button id="btn-pixie" class="btn-cyber flex-1 px-4 py-2 bg-green-500/20 text-green-400 border border-green-500 font-bold rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed" disabled>Pixie-Dust</button>
-                    <button id="btn-brute" class="btn-cyber flex-1 px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500 font-bold rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed" disabled>Brute-Force</button>
-                    <button id="btn-evil-twin" class="btn-cyber flex-1 px-4 py-2 bg-purple-500/20 text-purple-400 border border-purple-500 font-bold rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed" disabled>Evil Twin</button>
-                </div>
-                <button id="btn-stop-wps" class="btn-cyber w-full px-4 py-2 bg-red-600 text-white font-bold rounded text-xs hidden mb-3">Stop WPS Attack</button>
-                <button id="btn-stop-hs" class="btn-cyber w-full px-4 py-2 bg-red-600 text-white font-bold rounded text-xs hidden mb-3">Stop Handshake Capture</button>
-                <button id="btn-stop-et" class="btn-cyber w-full px-4 py-2 bg-red-600 text-white font-bold rounded text-xs hidden mb-3">Stop Evil Twin</button>
-
-                <div class="grid grid-cols-2 gap-4 text-xs">
-                    <div>
-                        <span class="text-gray-500 block text-[10px] tracking-widest">WPS PIN / STATUS</span>
-                        <span id="res-pin" class="neon-yellow font-bold break-all">------</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500 block text-[10px] tracking-widest">WPA PSK / FILE</span>
-                        <span id="res-psk" class="neon-green font-bold break-all">------</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500 block text-[10px] tracking-widest">CRACKED PASSWORD</span>
-                        <span id="res-password" class="neon-purple font-bold break-all">------</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-500 block text-[10px] tracking-widest">PORTAL PASSWORD</span>
-                        <span id="res-et-password" class="neon-purple font-bold break-all">------</span>
-                    </div>
-                    <div id="crack-controls" class="col-span-2 hidden">
-                        <span class="text-gray-500 block text-[10px] tracking-widest">WORDLIST</span>
-                        <input id="wordlist-path" type="text" value="/usr/share/wordlists/rockyou.txt" class="w-full bg-black/50 border border-gray-700 rounded px-2 py-1 text-[10px] text-gray-300 focus:outline-none focus:border-purple-500 mb-1">
-                        <div class="flex space-x-1">
-                            <button id="btn-crack" class="btn-cyber flex-1 px-2 py-1 bg-purple-500/20 text-purple-400 border border-purple-500 font-bold rounded text-[10px]">Crack Hashcat</button>
-                            <button id="btn-stop-crack" class="btn-cyber flex-1 px-2 py-1 bg-red-600 text-white font-bold rounded text-[10px] hidden">Stop</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="w-2/5 flex flex-col glass-panel rounded-lg overflow-hidden relative crt">
-            <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-black/20">
-                <h2 class="font-display text-lg text-gray-400 tracking-wider">LIVE CONSOLE</h2>
-                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-            </div>
-            <div id="console-output" class="flex-1 overflow-y-auto custom-scroll text-xs neon-green p-3 whitespace-pre-wrap relative z-10 text-left">
-            > VEKT Engine Initialized.<br>
-            > Awaiting commands...<br>
-            </div>
-        </div>
+        <span class="text-[10px] text-gray-500 tracking-[0.3em] hidden lg:block">
+            VECTOR EXPLOITATION TOOLKIT
+        </span>
     </div>
 
-    <script>
-        const ws = new WebSocket("ws://localhost:8000/ws?token=V$j(Vqm,}XF,9i_|HZtL");
-        const consoleOutput = document.getElementById('console-output');
+    <div class="flex items-center space-x-3 text-xs font-bold">
+        <div class="glass-panel px-3 py-1 rounded-full flex items-center space-x-2">
+            <span class="text-gray-500">IFACE:</span>
 
-        let selectedBssid = null;
-        let isAttacking = false;
-        let isCracking = false;
+            <select
+                id="interface-select"
+                class="bg-transparent text-cyan-400 focus:outline-none cursor-pointer"
+                disabled
+            ></select>
+        </div>
 
-        async function loadInterfaces() {
-            const response = await fetch('/api/interfaces');
-            const data = await response.json();
-            const select = document.getElementById('interface-select');
-            select.innerHTML = '';
-            data.interfaces.forEach(iface => {
-                const option = document.createElement('option');
-                option.value = iface;
-                option.innerText = iface;
-                if (iface === data.current) option.selected = true;
-                select.appendChild(option);
-            });
+        <div class="flex items-center space-x-2 glass-panel px-3 py-1 rounded-full">
+            <div
+                id="status-dot"
+                class="state-dot w-2 h-2 rounded-full bg-gray-600"
+            ></div>
+
+            <span id="status-text" class="text-gray-500">
+                DISCONNECTED
+            </span>
+        </div>
+    </div>
+</header>
+
+<main class="flex-1 flex p-3 overflow-hidden">
+
+    <section class="w-3/5 flex flex-col gap-3 mr-3">
+
+        <div id="scanline-bg" class="scanline-bg"></div>
+
+        <div class="flex-[3] flex flex-col glass-panel rounded-lg overflow-hidden relative">
+
+            <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-black/20">
+                <h2
+                    id="view-title"
+                    class="font-display text-lg text-gray-400 tracking-wider"
+                >
+                    NETWORKS
+                </h2>
+
+                <div class="flex space-x-2">
+                    <button
+                        id="btn-back"
+                        type="button"
+                        class="btn-cyber px-4 py-1 bg-gray-800/50 text-gray-400 border border-gray-700 rounded text-xs hidden"
+                    >
+                        ← BACK
+                    </button>
+
+                    <button
+                        id="btn-start"
+                        type="button"
+                        class="btn-cyber px-6 py-1 bg-cyan-500 text-black font-bold rounded text-xs"
+                        disabled
+                    >
+                        START SCAN
+                    </button>
+
+                    <button
+                        id="btn-stop"
+                        type="button"
+                        class="btn-cyber px-6 py-1 bg-red-600/20 text-red-400 border border-red-600 font-bold rounded text-xs"
+                        disabled
+                    >
+                        STOP
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-auto custom-scroll">
+                <table class="w-full text-xs">
+                    <thead class="bg-black/50 sticky top-0 text-gray-500 backdrop-blur-sm z-10">
+                        <tr class="border-b border-gray-800">
+                            <th class="p-2 text-left tracking-widest text-[10px]">
+                                ESSID
+                            </th>
+
+                            <th class="p-2 text-left tracking-widest text-[10px]">
+                                BSSID
+                            </th>
+
+                            <th class="p-2 text-center tracking-widest text-[10px]">
+                                PWR
+                            </th>
+
+                            <th class="p-2 text-center tracking-widest text-[10px]">
+                                WPS / ACTION
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody
+                        id="targets-body"
+                        class="text-gray-300"
+                    ></tbody>
+
+                    <tbody
+                        id="stations-body"
+                        class="text-gray-300 hidden"
+                    ></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="flex-[2] glass-panel rounded-lg p-4 overflow-y-auto custom-scroll">
+
+            <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-2">
+                <div>
+                    <h2 class="font-display text-lg text-gray-400 tracking-wider">
+                        TARGET INTEL
+                    </h2>
+
+                    <div
+                        id="job-label"
+                        class="text-[9px] text-gray-600 tracking-widest mt-1"
+                    >
+                        NO ACTIVE JOB
+                    </div>
+                </div>
+
+                <div
+                    id="job-state"
+                    class="text-[10px] text-gray-600 tracking-widest"
+                >
+                    IDLE
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-xs mb-4">
+
+                <div>
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        ESSID
+                    </span>
+
+                    <span
+                        id="info-essid"
+                        class="text-white font-bold truncate block"
+                    >
+                        None
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        BSSID
+                    </span>
+
+                    <span
+                        id="info-bssid"
+                        class="text-gray-400"
+                    >
+                        None
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        CHANNEL
+                    </span>
+
+                    <span
+                        id="info-channel"
+                        class="text-gray-400"
+                    >
+                        None
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        WPS STATUS
+                    </span>
+
+                    <span
+                        id="info-wps"
+                        class="text-gray-400"
+                    >
+                        None
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex space-x-2 mb-3">
+
+                <button
+                    id="btn-pixie"
+                    type="button"
+                    class="btn-cyber flex-1 px-4 py-2 bg-green-500/20 text-green-400 border border-green-500 font-bold rounded text-xs"
+                    disabled
+                >
+                    Pixie-Dust
+                </button>
+
+                <button
+                    id="btn-brute"
+                    type="button"
+                    class="btn-cyber flex-1 px-4 py-2 bg-yellow-500/20 text-yellow-400 border border-yellow-500 font-bold rounded text-xs"
+                    disabled
+                >
+                    Brute-Force
+                </button>
+
+                <button
+                    id="btn-evil-twin"
+                    type="button"
+                    class="btn-cyber flex-1 px-4 py-2 bg-purple-500/20 text-purple-400 border border-purple-500 font-bold rounded text-xs"
+                    disabled
+                >
+                    Evil Twin
+                </button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 mb-4">
+
+                <button
+                    id="btn-stop-wps"
+                    type="button"
+                    class="btn-cyber px-3 py-2 bg-red-600/20 text-red-400 border border-red-600 font-bold rounded text-[10px] hidden"
+                >
+                    STOP WPS
+                </button>
+
+                <button
+                    id="btn-stop-hs"
+                    type="button"
+                    class="btn-cyber px-3 py-2 bg-red-600/20 text-red-400 border border-red-600 font-bold rounded text-[10px] hidden"
+                >
+                    STOP CAPTURE
+                </button>
+
+                <button
+                    id="btn-stop-et"
+                    type="button"
+                    class="btn-cyber px-3 py-2 bg-red-600/20 text-red-400 border border-red-600 font-bold rounded text-[10px] hidden"
+                >
+                    STOP AP
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-xs">
+
+                <div>
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        WPS PIN
+                    </span>
+
+                    <span
+                        id="res-pin"
+                        class="neon-yellow font-bold break-all"
+                    >
+                        ------
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        WPS PSK
+                    </span>
+
+                    <span
+                        id="res-psk"
+                        class="neon-green font-bold break-all"
+                    >
+                        ------
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        CAPTURE FILE
+                    </span>
+
+                    <span
+                        id="res-capture"
+                        class="text-cyan-400 font-bold break-all"
+                    >
+                        ------
+                    </span>
+                </div>
+
+                <div>
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        CRACK RESULT
+                    </span>
+
+                    <span
+                        id="res-password"
+                        class="neon-purple font-bold break-all"
+                    >
+                        ------
+                    </span>
+                </div>
+
+                <div
+                    id="crack-controls"
+                    class="col-span-2 hidden"
+                >
+                    <span class="text-gray-500 block text-[10px] tracking-widest">
+                        WORDLIST
+                    </span>
+
+                    <input
+                        id="wordlist-path"
+                        type="text"
+                        value="/usr/share/wordlists/rockyou.txt"
+                        autocomplete="off"
+                        class="w-full bg-black/50 border border-gray-700 rounded px-2 py-1 text-[10px] text-gray-300 focus:outline-none focus:border-purple-500 mb-2"
+                    >
+
+                    <div class="flex space-x-1">
+                        <button
+                            id="btn-crack"
+                            type="button"
+                            class="btn-cyber flex-1 px-2 py-1 bg-purple-500/20 text-purple-400 border border-purple-500 font-bold rounded text-[10px]"
+                        >
+                            START HASHCAT
+                        </button>
+
+                        <button
+                            id="btn-stop-crack"
+                            type="button"
+                            class="btn-cyber flex-1 px-2 py-1 bg-red-600 text-white font-bold rounded text-[10px] hidden"
+                        >
+                            STOP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside class="w-2/5 flex flex-col glass-panel rounded-lg overflow-hidden relative crt">
+
+        <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-black/20">
+            <h2 class="font-display text-lg text-gray-400 tracking-wider">
+                LIVE CONSOLE
+            </h2>
+
+            <div
+                id="connection-indicator"
+                class="w-2 h-2 rounded-full bg-gray-600"
+            ></div>
+        </div>
+
+        <div
+            id="console-output"
+            class="flex-1 overflow-y-auto custom-scroll text-xs neon-green p-3 whitespace-pre-wrap relative z-10 text-left"
+        ></div>
+    </aside>
+</main>
+
+<script>
+"use strict";
+
+const dom = {
+    interfaceSelect: document.getElementById("interface-select"),
+    statusText: document.getElementById("status-text"),
+    statusDot: document.getElementById("status-dot"),
+    connectionIndicator: document.getElementById("connection-indicator"),
+    viewTitle: document.getElementById("view-title"),
+    scanline: document.getElementById("scanline-bg"),
+    startScan: document.getElementById("btn-start"),
+    stopScan: document.getElementById("btn-stop"),
+    back: document.getElementById("btn-back"),
+    targetsBody: document.getElementById("targets-body"),
+    stationsBody: document.getElementById("stations-body"),
+    infoEssid: document.getElementById("info-essid"),
+    infoBssid: document.getElementById("info-bssid"),
+    infoChannel: document.getElementById("info-channel"),
+    infoWps: document.getElementById("info-wps"),
+    jobLabel: document.getElementById("job-label"),
+    jobState: document.getElementById("job-state"),
+    btnPixie: document.getElementById("btn-pixie"),
+    btnBrute: document.getElementById("btn-brute"),
+    btnEvilTwin: document.getElementById("btn-evil-twin"),
+    stopWps: document.getElementById("btn-stop-wps"),
+    stopHs: document.getElementById("btn-stop-hs"),
+    stopEt: document.getElementById("btn-stop-et"),
+    resPin: document.getElementById("res-pin"),
+    resPsk: document.getElementById("res-psk"),
+    resCapture: document.getElementById("res-capture"),
+    resPassword: document.getElementById("res-password"),
+    crackControls: document.getElementById("crack-controls"),
+    wordlist: document.getElementById("wordlist-path"),
+    crack: document.getElementById("btn-crack"),
+    stopCrack: document.getElementById("btn-stop-crack"),
+    console: document.getElementById("console-output")
+};
+
+const state = {
+    socket: null,
+    reconnectTimer: null,
+    reconnectAttempts: 0,
+    connected: false,
+    interface: null,
+    controllerState: "IDLE",
+    target: null,
+    networks: new Map(),
+    stations: [],
+    job: null,
+    lastCaptureFile: null
+};
+
+function log(message) {
+    const line = document.createElement("div");
+    line.className = "console-line";
+    line.textContent = `> ${String(message ?? "")}`;
+
+    dom.console.appendChild(line);
+
+    while (dom.console.children.length > 400) {
+        dom.console.removeChild(
+            dom.console.firstChild
+        );
+    }
+
+    dom.console.scrollTop =
+        dom.console.scrollHeight;
+}
+
+function setStatus(text, textClass, dotClass) {
+    dom.statusText.textContent = text;
+    dom.statusText.className = textClass;
+    dom.statusDot.className =
+        `state-dot w-2 h-2 rounded-full ${dotClass}`;
+}
+
+function send(payload) {
+    if (
+        !state.socket ||
+        state.socket.readyState !== WebSocket.OPEN
+    ) {
+        log("WebSocket is not connected.");
+        return false;
+    }
+
+    state.socket.send(
+        JSON.stringify(payload)
+    );
+
+    return true;
+}
+
+function getToken() {
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const urlToken = params.get(
+        "token"
+    );
+
+    if (
+        urlToken &&
+        urlToken.length > 0
+    ) {
+        sessionStorage.setItem(
+            "vekt_operator_token",
+            urlToken
+        );
+
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+    }
+
+    return sessionStorage.getItem(
+        "vekt_operator_token"
+    );
+}
+
+function connect() {
+    const token = getToken();
+
+    if (!token) {
+        setStatus(
+            "NO TOKEN",
+            "text-yellow-400",
+            "bg-yellow-500"
+        );
+
+        log(
+            "Operator token is required."
+        );
+
+        return;
+    }
+
+    const protocol =
+        window.location.protocol === "https:"
+            ? "wss"
+            : "ws";
+
+    const url =
+        `${protocol}://${window.location.host}/ws?token=${encodeURIComponent(token)}`;
+
+    const socket =
+        new WebSocket(url);
+
+    state.socket = socket;
+
+    setStatus(
+        "CONNECTING",
+        "text-yellow-400",
+        "bg-yellow-500"
+    );
+
+    socket.addEventListener(
+        "open",
+        () => {
+            state.connected = true;
+            state.reconnectAttempts = 0;
+
+            dom.connectionIndicator.className =
+                "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+
+            dom.interfaceSelect.disabled =
+                false;
+
+            dom.startScan.disabled =
+                false;
+
+            setStatus(
+                state.controllerState,
+                "text-green-400",
+                "bg-green-500"
+            );
+
+            log(
+                "Operator channel established."
+            );
+
+            loadInterfaces();
         }
-        loadInterfaces();
+    );
 
-        document.getElementById('interface-select').onchange = (e) => {
-            ws.send(JSON.stringify({action: 'set_interface', interface: e.target.value}));
-        };
+    socket.addEventListener(
+        "message",
+        handleMessage
+    );
 
-        ws.onmessage = function(event) {
-            const msg = JSON.parse(event.data);
-            if (msg.type === 'log') {
-                consoleOutput.innerHTML += `> ${msg.message}<br>`;
-                consoleOutput.scrollTop = consoleOutput.scrollHeight;
-            }
-            else if (msg.type === 'targets') {
-                if (!selectedBssid) renderTargets(msg.data);
-            }
-            else if (msg.type === 'stations') {
-                if (selectedBssid && !isAttacking) renderStations(msg.data);
-            }
-            else if (msg.type === 'wps_success') {
-                if(msg.key_type === 'pin') document.getElementById('res-pin').innerText = msg.value;
-                if(msg.key_type === 'psk') {
-                    document.getElementById('res-psk').innerText = msg.value;
-                    stopAttackUI();
+    socket.addEventListener(
+        "close",
+        () => {
+            state.connected = false;
+
+            dom.connectionIndicator.className =
+                "w-2 h-2 rounded-full bg-gray-600";
+
+            dom.interfaceSelect.disabled =
+                true;
+
+            setStatus(
+                "DISCONNECTED",
+                "text-gray-500",
+                "bg-gray-600"
+            );
+
+            scheduleReconnect();
+        }
+    );
+
+    socket.addEventListener(
+        "error",
+        () => {
+            setStatus(
+                "SOCKET ERROR",
+                "text-red-400",
+                "bg-red-500"
+            );
+        }
+    );
+}
+
+function scheduleReconnect() {
+    if (
+        state.reconnectTimer !== null
+    ) {
+        return;
+    }
+
+    const token =
+        sessionStorage.getItem(
+            "vekt_operator_token"
+        );
+
+    if (!token) {
+        return;
+    }
+
+    const delay =
+        Math.min(
+            1000 *
+                (
+                    2 **
+                    state.reconnectAttempts
+                ),
+            10000
+        );
+
+    state.reconnectAttempts += 1;
+
+    state.reconnectTimer =
+        window.setTimeout(
+            () => {
+                state.reconnectTimer =
+                    null;
+                connect();
+            },
+            delay
+        );
+}
+
+async function loadInterfaces() {
+    try {
+        const response =
+            await fetch(
+                "/api/interfaces",
+                {
+                    cache: "no-store"
                 }
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !Array.isArray(
+                data.interfaces
+            )
+        ) {
+            throw new Error(
+                data.error ||
+                "Invalid interface response."
+            );
+        }
+
+        const fragment =
+            document.createDocumentFragment();
+
+        for (
+            const iface
+            of data.interfaces
+        ) {
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value = iface;
+            option.textContent = iface;
+
+            if (
+                iface === data.current
+            ) {
+                option.selected = true;
             }
-            else if (msg.type === 'hs_success') {
-                document.getElementById('res-pin').innerText = "HANDSHAKE CAPTURED!";
-                document.getElementById('res-pin').className = "neon-green font-bold break-all";
-                document.getElementById('res-psk').innerText = msg.value;
-                document.getElementById('res-psk').className = "neon-green font-bold break-all";
-                document.getElementById('crack-controls').classList.remove('hidden');
-                stopAttackUI();
+
+            fragment.appendChild(
+                option
+            );
+        }
+
+        dom.interfaceSelect.replaceChildren(
+            fragment
+        );
+
+        if (
+            data.current
+        ) {
+            state.interface =
+                data.current;
+        } else if (
+            data.interfaces.length
+        ) {
+            state.interface =
+                data.interfaces[0];
+
+            dom.interfaceSelect.value =
+                state.interface;
+        }
+    } catch (error) {
+        log(
+            `Interface discovery failed: ${error.message}`
+        );
+    }
+}
+
+function handleMessage(event) {
+    let message;
+
+    try {
+        message =
+            JSON.parse(
+                event.data
+            );
+    } catch {
+        log(
+            "Received malformed server message."
+        );
+        return;
+    }
+
+    switch (
+        message.type
+    ) {
+        case "log":
+            log(
+                message.message
+            );
+            break;
+
+        case "error":
+            log(
+                `[ERROR] ${message.message}`
+            );
+
+            if (
+                state.job &&
+                state.job.state === "STARTING"
+            ) {
+                state.job = null;
+                renderJobState();
             }
-            else if (msg.type === 'crack_success') {
-                document.getElementById('res-password').innerText = msg.value;
-                stopCrackUI();
+            break;
+
+        case "state":
+            applyServerState(
+                message
+            );
+            break;
+
+        case "job":
+            handleJobEvent(
+                message
+            );
+            break;
+
+        case "targets":
+            renderTargets(
+                Array.isArray(
+                    message.data
+                )
+                    ? message.data
+                    : []
+            );
+            break;
+
+        case "stations":
+            state.stations =
+                Array.isArray(
+                    message.data
+                )
+                    ? message.data
+                    : [];
+
+            if (
+                state.target
+                && !hasActiveJob()
+            ) {
+                renderStations(
+                    state.stations
+                );
             }
-            else if (msg.type === 'et_success') {
-                document.getElementById('res-et-password').innerText = msg.value;
-                stopAttackUI();
+            break;
+
+        case "target_selected":
+            applyTarget(
+                message.target
+            );
+            break;
+
+        case "success":
+            handleSuccess(
+                message
+            );
+            break;
+
+        case "clear_ui":
+            clearTargetView();
+            break;
+
+        default:
+            break;
+    }
+}
+
+function applyServerState(message) {
+    state.controllerState =
+        String(
+            message.state ||
+            "IDLE"
+        );
+
+    state.interface =
+        message.interface ||
+        state.interface;
+
+    if (
+        message.target
+    ) {
+        applyTarget(
+            message.target
+        );
+    }
+
+    state.job =
+        message.job || null;
+
+    renderJobState();
+    renderMainState();
+}
+
+function handleJobEvent(message) {
+    if (
+        message.job
+    ) {
+        state.job =
+            message.job;
+    }
+
+    renderJobState();
+    renderMainState();
+}
+
+function handleSuccess(message) {
+    if (
+        message.job_type === "wps"
+    ) {
+        if (
+            message.key_type === "pin"
+        ) {
+            dom.resPin.textContent =
+                String(
+                    message.value
+                );
+        }
+
+        if (
+            message.key_type === "psk"
+        ) {
+            dom.resPsk.textContent =
+                String(
+                    message.value
+                );
+        }
+    }
+
+    if (
+        message.job_type === "handshake"
+    ) {
+        const value =
+            String(
+                message.value ?? ""
+            );
+
+        state.lastCaptureFile =
+            value;
+
+        dom.resCapture.textContent =
+            value || "AVAILABLE";
+
+        dom.crackControls.classList.remove(
+            "hidden"
+        );
+    }
+
+    if (
+        message.job_type === "crack"
+        && message.key_type === "password"
+    ) {
+        dom.resPassword.textContent =
+            String(
+                message.value
+            );
+    }
+
+    if (
+        message.job_type === "evil_twin"
+    ) {
+        if (
+            message.key_type === "ap_ready"
+        ) {
+            const value =
+                message.value;
+
+            if (
+                value &&
+                typeof value === "object"
+            ) {
+                log(
+                    `Lab AP ready: ${value.ssid ?? "unknown"}`
+                );
             }
-            else if (msg.type === 'clear_ui') {
-                selectedBssid = null;
-                isAttacking = false;
-                isCracking = false;
-                document.getElementById('targets-body').innerHTML = '';
-                document.getElementById('stations-body').innerHTML = '';
-                backToScan();
+        }
+    }
+
+    if (
+        state.job
+    ) {
+        state.job.state =
+            "SUCCESS";
+    }
+
+    renderJobState();
+    renderMainState();
+}
+
+function applyTarget(target) {
+    if (
+        !target
+        || typeof target !== "object"
+    ) {
+        return;
+    }
+
+    state.target = {
+        bssid:
+            String(
+                target.bssid ?? ""
+            ),
+        essid:
+            String(
+                target.essid ?? "Hidden"
+            ),
+        channel:
+            String(
+                target.channel ?? "?"
+            ),
+        signal_dbm:
+            String(
+                target.signal_dbm ?? "Unknown"
+            ),
+        wps_status:
+            String(
+                target.wps_status ?? "Unknown"
+            )
+    };
+
+    dom.infoEssid.textContent =
+        state.target.essid;
+
+    dom.infoBssid.textContent =
+        state.target.bssid;
+
+    dom.infoChannel.textContent =
+        state.target.channel;
+
+    dom.infoWps.textContent =
+        state.target.wps_status;
+
+    dom.infoWps.className =
+        state.target.wps_status === "Unlocked"
+            ? "neon-green font-bold"
+            : "neon-red font-bold";
+
+    clearResultsOnly();
+
+    dom.viewTitle.textContent =
+        "CONNECTED STATIONS";
+
+    dom.back.classList.remove(
+        "hidden"
+    );
+
+    dom.startScan.classList.add(
+        "hidden"
+    );
+
+    dom.stopScan.classList.add(
+        "hidden"
+    );
+
+    dom.targetsBody.classList.add(
+        "hidden"
+    );
+
+    dom.stationsBody.classList.remove(
+        "hidden"
+    );
+
+    renderStations(
+        state.stations
+    );
+
+    renderMainState();
+}
+
+function clearResultsOnly() {
+    dom.resPin.textContent =
+        "------";
+
+    dom.resPsk.textContent =
+        "------";
+
+    dom.resCapture.textContent =
+        "------";
+
+    dom.resPassword.textContent =
+        "------";
+
+    state.lastCaptureFile =
+        null;
+
+    dom.crackControls.classList.add(
+        "hidden"
+    );
+}
+
+function clearTargetView() {
+    state.target = null;
+    state.stations = [];
+    state.job = null;
+
+    dom.viewTitle.textContent =
+        "NETWORKS";
+
+    dom.back.classList.add(
+        "hidden"
+    );
+
+    dom.startScan.classList.remove(
+        "hidden"
+    );
+
+    dom.targetsBody.classList.remove(
+        "hidden"
+    );
+
+    dom.stationsBody.classList.add(
+        "hidden"
+    );
+
+    dom.stationsBody.replaceChildren();
+
+    clearResultsOnly();
+
+    renderJobState();
+    renderMainState();
+}
+
+function renderTargets(networks) {
+    state.networks.clear();
+
+    for (
+        const network
+        of networks
+    ) {
+        if (
+            !network ||
+            !network.bssid
+        ) {
+            continue;
+        }
+
+        state.networks.set(
+            String(
+                network.bssid
+            ),
+            network
+        );
+    }
+
+    const values =
+        Array.from(
+            state.networks.values()
+        ).sort(
+            (a, b) =>
+                powerValue(
+                    b.signal_dbm
+                ) -
+                powerValue(
+                    a.signal_dbm
+                )
+        );
+
+    dom.targetsBody.replaceChildren();
+
+    if (
+        values.length === 0
+    ) {
+        const row =
+            document.createElement(
+                "tr"
+            );
+
+        const cell =
+            document.createElement(
+                "td"
+            );
+
+        cell.colSpan = 4;
+        cell.className =
+            "table-empty p-8 text-center text-gray-600";
+
+        cell.textContent =
+            "No networks detected.";
+
+        row.appendChild(
+            cell
+        );
+
+        dom.targetsBody.appendChild(
+            row
+        );
+
+        return;
+    }
+
+    const fragment =
+        document.createDocumentFragment();
+
+    for (
+        const network
+        of values
+    ) {
+        const row =
+            document.createElement(
+                "tr"
+            );
+
+        row.className =
+            "target-row border-b border-gray-900/50 cursor-pointer";
+
+        if (
+            state.target &&
+            state.target.bssid ===
+                network.bssid
+        ) {
+            row.classList.add(
+                "target-selected"
+            );
+        }
+
+        const essid =
+            createTextCell(
+                network.essid,
+                "p-2 font-bold text-white truncate-cell"
+            );
+
+        const bssid =
+            createTextCell(
+                network.bssid,
+                "p-2 text-gray-500"
+            );
+
+        const power =
+            createTextCell(
+                network.signal_dbm,
+                `p-2 text-center ${powerClass(
+                    network.signal_dbm
+                )} font-bold`
+            );
+
+        const action =
+            document.createElement(
+                "td"
+            );
+
+        action.className =
+            "p-2 text-center";
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+        button.type = "button";
+        button.className =
+            `btn-cyber px-3 py-1 rounded text-[10px] font-bold ${
+                network.wps_status === "Unlocked"
+                    ? "bg-green-500/20 text-green-400 border border-green-500"
+                    : "bg-gray-800/60 text-gray-400 border border-gray-700"
+            }`;
+
+        button.textContent =
+            network.wps_status === "Unlocked"
+                ? "WPS"
+                : "SELECT";
+
+        button.addEventListener(
+            "click",
+            (event) => {
+                event.stopPropagation();
+
+                selectTarget(
+                    network.bssid
+                );
             }
-        };
+        );
 
-        function renderTargets(data) {
-            const targetsBody = document.getElementById('targets-body');
-            targetsBody.innerHTML = '';
-            data.sort((a, b) => parseInt(b.signal_dbm) - parseInt(a.signal_dbm));
-            data.forEach(net => {
-                const tr = document.createElement('tr');
-                tr.className = 'target-row border-b border-gray-900/50';
-                const sigInt = parseInt(net.signal_dbm);
-                let pwrClass = 'neon-red';
-                if (sigInt >= -65) pwrClass = 'neon-green';
-                else if (sigInt >= -80) pwrClass = 'neon-yellow';
-                const wpsClass = net.wps_status === 'Unlocked' ? 'neon-green' : 'neon-red';
-                tr.innerHTML = `<td class="p-2 font-bold text-white">${net.essid}</td><td class="p-2 text-gray-500">${net.bssid}</td><td class="p-2 text-center ${pwrClass} font-bold">${net.signal_dbm}</td><td class="p-2 text-center ${wpsClass} font-bold">${net.wps_status}</td>`;
-                tr.onclick = () => selectTarget(net);
-                targetsBody.appendChild(tr);
-            });
-        }
+        action.appendChild(
+            button
+        );
 
-        function renderStations(data) {
-            const stationsBody = document.getElementById('stations-body');
-            let html = '';
-            if (data.length === 0) {
-                html += `<tr><td colspan="4" class="p-8 text-center text-gray-500 animate-pulse">Waiting for connected devices...</td></tr>`;
-            } else {
-                data.forEach(st => {
-                    html += `<tr class="target-row border-b border-gray-900/50">
-                        <td class="p-2 text-white">${st.mac}</td>
-                        <td></td>
-                        <td class="p-2 text-center neon-yellow font-bold">${st.pwr}</td>
-                        <td class="p-2 text-center"><button onclick="startDeauth('${st.mac}')" class="btn-cyber px-3 py-1 bg-red-600 text-white text-[10px] rounded hover:bg-red-500 font-bold">⚡ CAPTURE</button></td>
-                    </tr>`;
-                });
+        row.append(
+            essid,
+            bssid,
+            power,
+            action
+        );
+
+        row.addEventListener(
+            "click",
+            () => {
+                selectTarget(
+                    network.bssid
+                );
             }
-            stationsBody.innerHTML = html;
+        );
+
+        fragment.appendChild(
+            row
+        );
+    }
+
+    dom.targetsBody.appendChild(
+        fragment
+    );
+}
+
+function renderStations(stations) {
+    dom.stationsBody.replaceChildren();
+
+    if (
+        !stations.length
+    ) {
+        const row =
+            document.createElement(
+                "tr"
+            );
+
+        const cell =
+            document.createElement(
+                "td"
+            );
+
+        cell.colSpan = 4;
+        cell.className =
+            "table-empty p-8 text-center text-gray-500 animate-pulse";
+
+        cell.textContent =
+            "Waiting for connected devices...";
+
+        row.appendChild(
+            cell
+        );
+
+        dom.stationsBody.appendChild(
+            row
+        );
+
+        return;
+    }
+
+    const fragment =
+        document.createDocumentFragment();
+
+    for (
+        const station
+        of stations
+    ) {
+        const row =
+            document.createElement(
+                "tr"
+            );
+
+        row.className =
+            "target-row border-b border-gray-900/50";
+
+        const mac =
+            createTextCell(
+                station.mac,
+                "p-2 text-white"
+            );
+
+        const blank =
+            document.createElement(
+                "td"
+            );
+
+        const power =
+            createTextCell(
+                station.pwr,
+                "p-2 text-center neon-yellow font-bold"
+            );
+
+        const action =
+            document.createElement(
+                "td"
+            );
+
+        action.className =
+            "p-2 text-center";
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+        button.type = "button";
+        button.className =
+            "btn-cyber px-3 py-1 bg-red-600/20 text-red-400 border border-red-600 text-[10px] rounded font-bold";
+
+        button.textContent =
+            "CAPTURE";
+
+        button.addEventListener(
+            "click",
+            () => {
+                startHandshakeCapture(
+                    station.mac
+                );
+            }
+        );
+
+        action.appendChild(
+            button
+        );
+
+        row.append(
+            mac,
+            blank,
+            power,
+            action
+        );
+
+        fragment.appendChild(
+            row
+        );
+    }
+
+    dom.stationsBody.appendChild(
+        fragment
+    );
+}
+
+function createTextCell(
+    value,
+    className
+) {
+    const cell =
+        document.createElement(
+            "td"
+        );
+
+    cell.className =
+        className;
+
+    cell.textContent =
+        String(
+            value ?? ""
+        );
+
+    return cell;
+}
+
+function powerValue(value) {
+    const numeric =
+        Number.parseInt(
+            value,
+            10
+        );
+
+    return Number.isFinite(
+        numeric
+    )
+        ? numeric
+        : -999;
+}
+
+function powerClass(value) {
+    const numeric =
+        powerValue(
+            value
+        );
+
+    if (
+        numeric >= -65
+    ) {
+        return "neon-green";
+    }
+
+    if (
+        numeric >= -80
+    ) {
+        return "neon-yellow";
+    }
+
+    return "neon-red";
+}
+
+function hasActiveJob() {
+    return Boolean(
+        state.job
+        && [
+            "STARTING",
+            "RUNNING",
+            "STOPPING"
+        ].includes(
+            state.job.state
+        )
+    );
+}
+
+function renderJobState() {
+    const job =
+        state.job;
+
+    if (!job) {
+        dom.jobLabel.textContent =
+            "NO ACTIVE JOB";
+
+        dom.jobState.textContent =
+            state.controllerState;
+
+        return;
+    }
+
+    dom.jobLabel.textContent =
+        `${String(
+            job.name
+        ).toUpperCase()} · ${String(
+            job.job_id
+        )}`;
+
+    dom.jobState.textContent =
+        String(
+            job.state
+        );
+}
+
+function renderMainState() {
+    const stateName =
+        state.controllerState;
+
+    if (
+        !state.connected
+    ) {
+        setStatus(
+            "DISCONNECTED",
+            "text-gray-500",
+            "bg-gray-600"
+        );
+
+        return;
+    }
+
+    if (
+        stateName === "RECON"
+    ) {
+        dom.scanline.style.display =
+            "block";
+
+        setStatus(
+            "SCANNING",
+            "text-cyan-400",
+            "bg-cyan-500 animate-pulse"
+        );
+    } else if (
+        stateName === "TARGETED"
+    ) {
+        dom.scanline.style.display =
+            "none";
+
+        setStatus(
+            "FOCUSED",
+            "text-yellow-400",
+            "bg-yellow-500"
+        );
+    } else if (
+        stateName === "STARTING"
+    ) {
+        dom.scanline.style.display =
+            "none";
+
+        setStatus(
+            "STARTING",
+            "text-yellow-400",
+            "bg-yellow-500 animate-pulse"
+        );
+    } else if (
+        stateName === "RUNNING"
+    ) {
+        dom.scanline.style.display =
+            "none";
+
+        const name =
+            state.job
+                ? String(
+                    state.job.name
+                ).toUpperCase()
+                : "RUNNING";
+
+        setStatus(
+            name,
+            "text-red-400",
+            "bg-red-500 animate-pulse"
+        );
+    } else if (
+        stateName === "SUCCESS"
+    ) {
+        setStatus(
+            "SUCCESS",
+            "text-green-400",
+            "bg-green-500"
+        );
+    } else if (
+        stateName === "FAILED"
+    ) {
+        setStatus(
+            "FAILED",
+            "text-red-400",
+            "bg-red-500"
+        );
+    } else if (
+        stateName === "STOPPING"
+    ) {
+        setStatus(
+            "STOPPING",
+            "text-yellow-400",
+            "bg-yellow-500 animate-pulse"
+        );
+    } else if (
+        stateName === "RESTORING"
+    ) {
+        setStatus(
+            "RESTORING",
+            "text-yellow-400",
+            "bg-yellow-500 animate-pulse"
+        );
+    } else {
+        setStatus(
+            "IDLE",
+            "text-gray-500",
+            "bg-gray-600"
+        );
+    }
+
+    updateControls();
+}
+
+function updateControls() {
+    const hasTarget =
+        Boolean(
+            state.target
+        );
+
+    const busy =
+        hasActiveJob();
+
+    const recon =
+        state.controllerState ===
+        "RECON";
+
+    const starting =
+        state.controllerState ===
+        "STARTING";
+
+    const stopping =
+        state.controllerState ===
+        "STOPPING";
+
+    dom.startScan.disabled =
+        !state.connected
+        || recon
+        || busy
+        || starting
+        || Boolean(
+            state.target
+        )
+        || stopping;
+
+    dom.stopScan.disabled =
+        !state.connected
+        || !recon;
+
+    dom.btnPixie.disabled =
+        !hasTarget
+        || busy
+        || !state.connected;
+
+    dom.btnBrute.disabled =
+        !hasTarget
+        || busy
+        || !state.connected;
+
+    dom.btnEvilTwin.disabled =
+        !hasTarget
+        || busy
+        || !state.connected;
+
+    dom.interfaceSelect.disabled =
+        !state.connected
+        || busy
+        || recon;
+
+    dom.stopWps.classList.toggle(
+        "hidden",
+        !(
+            state.job
+            && state.job.name === "wps"
+            && busy
+        )
+    );
+
+    dom.stopHs.classList.toggle(
+        "hidden",
+        !(
+            state.job
+            && state.job.name === "handshake"
+            && busy
+        )
+    );
+
+    dom.stopEt.classList.toggle(
+        "hidden",
+        !(
+            state.job
+            && state.job.name === "evil_twin"
+            && busy
+        )
+    );
+
+    const crackBusy =
+        state.job
+        && state.job.name === "crack"
+        && busy;
+
+    dom.crack.disabled =
+        crackBusy
+        || !state.lastCaptureFile;
+
+    dom.crack.classList.toggle(
+        "hidden",
+        Boolean(
+            crackBusy
+        )
+    );
+
+    dom.stopCrack.classList.toggle(
+        "hidden",
+        !crackBusy
+    );
+}
+
+function selectTarget(bssid) {
+    if (
+        hasActiveJob()
+        || !state.connected
+    ) {
+        return;
+    }
+
+    if (
+        !state.networks.has(
+            bssid
+        )
+    ) {
+        return;
+    }
+
+    send({
+        action: "select_target",
+        bssid
+    });
+}
+
+function startRecon() {
+    if (
+        !send({
+            action: "start_recon"
+        })
+    ) {
+        return;
+    }
+
+    state.controllerState =
+        "STARTING";
+
+    renderMainState();
+}
+
+function stopRecon() {
+    send({
+        action: "stop_recon"
+    });
+}
+
+function backToScan() {
+    if (
+        !state.connected
+    ) {
+        return;
+    }
+
+    send({
+        action: "back_to_scan"
+    });
+}
+
+function startWps(
+    mode
+) {
+    if (
+        !state.target
+        || hasActiveJob()
+    ) {
+        return;
+    }
+
+    send({
+        action: "start_wps",
+        mode
+    });
+}
+
+function stopWps() {
+    send({
+        action: "stop_wps"
+    });
+}
+
+function startHandshakeCapture(
+    clientMac
+) {
+    if (
+        !state.target
+        || hasActiveJob()
+    ) {
+        return;
+    }
+
+    send({
+        action: "start_handshake",
+        client_mac: clientMac
+    });
+}
+
+function stopHandshake() {
+    send({
+        action: "stop_handshake"
+    });
+}
+
+function startEvilTwin() {
+    if (
+        !state.target
+        || hasActiveJob()
+    ) {
+        return;
+    }
+
+    send({
+        action: "start_evil_twin"
+    });
+}
+
+function stopEvilTwin() {
+    send({
+        action: "stop_evil_twin"
+    });
+}
+
+function startCrack() {
+    if (
+        !state.lastCaptureFile
+        || hasActiveJob()
+    ) {
+        return;
+    }
+
+    const wordlist =
+        dom.wordlist.value.trim();
+
+    if (
+        !wordlist
+    ) {
+        log(
+            "Wordlist path is required."
+        );
+        return;
+    }
+
+    send({
+        action: "start_crack",
+        cap_file:
+            state.lastCaptureFile,
+        wordlist
+    });
+}
+
+function stopCrack() {
+    send({
+        action: "stop_crack"
+    });
+}
+
+dom.interfaceSelect.addEventListener(
+    "change",
+    (event) => {
+        const value =
+            event.target.value;
+
+        if (!value) {
+            return;
         }
 
-        function selectTarget(net) {
-            selectedBssid = net.bssid;
-            isAttacking = false;
-            isCracking = false;
+        send({
+            action: "set_interface",
+            interface: value
+        });
+    }
+);
 
-            document.getElementById('view-title').innerText = "CONNECTED STATIONS";
-            document.getElementById('btn-back').classList.remove('hidden');
-            document.getElementById('btn-start').classList.add('hidden');
-            document.getElementById('btn-stop').classList.add('hidden');
-            document.getElementById('scanline-bg').style.display = 'none';
+dom.startScan.addEventListener(
+    "click",
+    startRecon
+);
 
-            document.getElementById('targets-body').classList.add('hidden');
-            document.getElementById('stations-body').classList.remove('hidden');
+dom.stopScan.addEventListener(
+    "click",
+    stopRecon
+);
 
-            document.getElementById('info-essid').innerText = net.essid;
-            document.getElementById('info-bssid').innerText = net.bssid;
-            document.getElementById('info-channel').innerText = net.channel;
-            document.getElementById('info-wps').innerText = net.wps_status;
-            document.getElementById('info-wps').className = net.wps_status === 'Unlocked' ? 'neon-green font-bold' : 'neon-red font-bold';
+dom.back.addEventListener(
+    "click",
+    backToScan
+);
 
-            document.getElementById('res-pin').innerText = '------';
-            document.getElementById('res-pin').className = "neon-yellow font-bold break-all";
-            document.getElementById('res-psk').innerText = '------';
-            document.getElementById('res-psk').className = "neon-green font-bold break-all";
-            document.getElementById('res-password').innerText = '------';
-            document.getElementById('res-et-password').innerText = '------';
-            document.getElementById('crack-controls').classList.add('hidden');
+dom.btnPixie.addEventListener(
+    "click",
+    () => startWps("pixie")
+);
 
-            document.getElementById('btn-pixie').disabled = false;
-            document.getElementById('btn-brute').disabled = false;
-            document.getElementById('btn-evil-twin').disabled = false;
+dom.btnBrute.addEventListener(
+    "click",
+    () => startWps("bruteforce")
+);
 
-            document.getElementById('btn-pixie').classList.remove('hidden');
-            document.getElementById('btn-brute').classList.remove('hidden');
-            document.getElementById('btn-evil-twin').classList.remove('hidden');
-            document.getElementById('btn-stop-wps').classList.add('hidden');
-            document.getElementById('btn-stop-hs').classList.add('hidden');
-            document.getElementById('btn-stop-et').classList.add('hidden');
+dom.stopWps.addEventListener(
+    "click",
+    stopWps
+);
 
-            document.getElementById('status-text').innerText = 'FOCUSED';
-            document.getElementById('status-text').className = 'text-yellow-400';
-            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-yellow-500 animate-pulse';
+dom.stopHs.addEventListener(
+    "click",
+    stopHandshake
+);
 
-            ws.send(JSON.stringify({action: 'select_target', bssid: net.bssid}));
+dom.btnEvilTwin.addEventListener(
+    "click",
+    startEvilTwin
+);
+
+dom.stopEt.addEventListener(
+    "click",
+    stopEvilTwin
+);
+
+dom.crack.addEventListener(
+    "click",
+    startCrack
+);
+
+dom.stopCrack.addEventListener(
+    "click",
+    stopCrack
+);
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+        if (
+            state.socket
+            && state.socket.readyState ===
+                WebSocket.OPEN
+        ) {
+            state.socket.close();
         }
+    }
+);
 
-        function backToScan() {
-            selectedBssid = null;
-            isAttacking = false;
-            isCracking = false;
-            document.getElementById('view-title').innerText = "NETWORKS";
-            document.getElementById('btn-back').classList.add('hidden');
-            document.getElementById('btn-start').classList.remove('hidden');
-            document.getElementById('btn-stop').classList.remove('hidden');
-            document.getElementById('targets-body').classList.remove('hidden');
-            document.getElementById('stations-body').classList.add('hidden');
-            ws.send(JSON.stringify({action: 'back_to_scan'}));
-        }
+state.networks.clear();
 
-        document.getElementById('btn-back').onclick = backToScan;
+dom.console.replaceChildren();
 
-        document.getElementById('btn-start').onclick = () => {
-            ws.send(JSON.stringify({action: 'start_recon'}));
-            document.getElementById('scanline-bg').style.display = 'block';
-            document.getElementById('status-text').innerText = 'SCANNING';
-            document.getElementById('status-text').className = 'text-cyan-400';
-            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-cyan-500 animate-pulse';
-            document.getElementById('btn-start').classList.add('opacity-50', 'cursor-not-allowed');
-            document.getElementById('btn-stop').classList.remove('opacity-50', 'cursor-not-allowed');
-        };
+log(
+    "VEKT Engine Initialized."
+);
 
-        document.getElementById('btn-stop').onclick = () => {
-            ws.send(JSON.stringify({action: 'stop_recon'}));
-            document.getElementById('scanline-bg').style.display = 'none';
-            document.getElementById('status-text').innerText = 'IDLE';
-            document.getElementById('status-text').className = 'text-gray-500';
-            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-gray-600';
-            document.getElementById('btn-start').classList.remove('opacity-50', 'cursor-not-allowed');
-            document.getElementById('btn-stop').classList.add('opacity-50', 'cursor-not-allowed');
-        };
+log(
+    "Awaiting authenticated operator channel."
+);
 
-        function startAttackUI() {
-            isAttacking = true;
-            document.getElementById('btn-pixie').classList.add('hidden');
-            document.getElementById('btn-brute').classList.add('hidden');
-            document.getElementById('btn-evil-twin').classList.add('hidden');
-            document.getElementById('status-text').innerText = 'ATTACKING';
-            document.getElementById('status-text').className = 'text-red-400';
-            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-red-500 animate-pulse';
-        }
+renderJobState();
+renderMainState();
+updateControls();
 
-        function stopAttackUI() {
-            isAttacking = false;
-            document.getElementById('btn-pixie').classList.remove('hidden');
-            document.getElementById('btn-brute').classList.remove('hidden');
-            document.getElementById('btn-evil-twin').classList.remove('hidden');
-            document.getElementById('btn-stop-wps').classList.add('hidden');
-            document.getElementById('btn-stop-hs').classList.add('hidden');
-            document.getElementById('btn-stop-et').classList.add('hidden');
-            document.getElementById('status-text').innerText = 'FOCUSED';
-            document.getElementById('status-text').className = 'text-yellow-400';
-            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-yellow-500 animate-pulse';
-        }
-
-        document.getElementById('btn-pixie').onclick = () => {
-            if(!selectedBssid || isAttacking) return;
-            startAttackUI();
-            document.getElementById('btn-stop-wps').classList.remove('hidden');
-            ws.send(JSON.stringify({action: 'start_wps', mode: 'pixie'}));
-        };
-        document.getElementById('btn-brute').onclick = () => {
-            if(!selectedBssid || isAttacking) return;
-            startAttackUI();
-            document.getElementById('btn-stop-wps').classList.remove('hidden');
-            ws.send(JSON.stringify({action: 'start_wps', mode: 'bruteforce'}));
-        };
-        document.getElementById('btn-stop-wps').onclick = () => {
-            ws.send(JSON.stringify({action: 'stop_wps'}));
-            stopAttackUI();
-        };
-
-        window.startDeauth = function(mac) {
-            if(!selectedBssid || isAttacking) return;
-            startAttackUI();
-            document.getElementById('btn-stop-hs').classList.remove('hidden');
-            ws.send(JSON.stringify({action: 'start_deauth', client_mac: mac}));
-        };
-
-        document.getElementById('btn-stop-hs').onclick = () => {
-            ws.send(JSON.stringify({action: 'stop_handshake'}));
-            stopAttackUI();
-        };
-
-        document.getElementById('btn-evil-twin').onclick = () => {
-            if(!selectedBssid || isAttacking) return;
-            startAttackUI();
-            document.getElementById('btn-stop-et').classList.remove('hidden');
-            document.getElementById('status-text').innerText = 'EVIL TWIN';
-            document.getElementById('status-text').className = 'text-purple-400';
-            document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-purple-500 animate-pulse';
-            ws.send(JSON.stringify({action: 'start_evil_twin'}));
-        };
-
-        document.getElementById('btn-stop-et').onclick = () => {
-            ws.send(JSON.stringify({action: 'stop_evil_twin'}));
-            stopAttackUI();
-        };
-
-        function stopCrackUI() {
-            isCracking = false;
-            document.getElementById('btn-crack').classList.remove('hidden');
-            document.getElementById('btn-stop-crack').classList.add('hidden');
-        }
-
-        document.getElementById('btn-crack').onclick = () => {
-            if(isCracking) return;
-            isCracking = true;
-            const wordlist = document.getElementById('wordlist-path').value;
-            const cap_file = document.getElementById('res-psk').innerText;
-            ws.send(JSON.stringify({action: 'start_crack', wordlist: wordlist, cap_file: cap_file}));
-            document.getElementById('btn-crack').classList.add('hidden');
-            document.getElementById('btn-stop-crack').classList.remove('hidden');
-        };
-
-        document.getElementById('btn-stop-crack').onclick = () => {
-            ws.send(JSON.stringify({action: 'stop_crack'}));
-            stopCrackUI();
-        };
-    </script>
+connect();
+</script>
 </body>
 </html>
