@@ -1,96 +1,182 @@
 <div align="center">
-# V E K T | Vector Exploitation & Kill Toolkit
+
+# V E K T
+
+### Vector Exploitation & Kill Toolkit
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Web%20UI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Kali%20%7C%20Parrot-darkgreen?logo=linux&logoColor=white)]()
-[![UI](https://img.shields.io/badge/UI-Cyberpunk%20Theme-%2300E5FF?logo=tailwindcss&logoColor=white)]()
+[![Platform](https://img.shields.io/badge/Platform-Kali%20%7C%20Parrot%20%7C%20Linux-darkgreen?logo=linux&logoColor=white)]()
+[![UI](https://img.shields.io/badge/UI-Cyberpunk-00E5FF?logo=tailwindcss&logoColor=white)]()
 
-**A modern, web-driven wireless auditing framework.**
+**A modern, web-driven wireless security testing framework.**
 
-*Stop juggling multiple terminal tabs. Command the airwaves from a single, sleek dashboard.*
+*Recon. Target. Analyze. Test. All from one command center.*
+
 </div>
 
 ---
 
 ## ⚠️ Disclaimer
 
-**VEKT** is designed for authorized security auditing, educational purposes, and CTF challenges only.
-Attacking wireless networks without explicit permission from the owner is illegal. The developer assumes no liability and is not responsible for any misuse or damage caused by this program.
+**VEKT** is designed for authorized security auditing, educational research, private laboratories, and CTF competitions.
+
+Only use VEKT against wireless networks and devices that you own or have explicit permission to test.
+
+The developer assumes no liability for misuse, service disruption, data loss, or any unauthorized activity performed with this software.
 
 ---
 
 ## 🚀 Overview
 
-Most wireless testing tools require running multiple CLI commands across different terminal tabs (`airodump` here, `aireplay` there, `reaver` somewhere else). **VEKT** solves this by bringing the entire `aircrack-ng` suite and WPS attack vectors into a single, dark-themed, web-based graphical interface.
+Wireless security testing often means jumping between multiple terminal windows, manually managing interfaces, watching several processes, and keeping track of capture files.
 
-Built with a decoupled architecture (FastAPI Backend + HTML/JS Frontend) and an **Offline-First design**, VEKT ensures smooth execution without UI freezing, providing real-time terminal logs directly inside the browser. You can run it on a laptop or Raspberry Pi in your backpack and control the attacks from your smartphone!
+**VEKT** brings that workflow into a single operator-focused dashboard.
 
-## 📸 Screenshots
+Built around a **FastAPI backend, WebSocket event system, modular wireless engines, centralized process supervision, and a cyberpunk web interface**, VEKT turns a collection of command-line security utilities into one coherent testing environment.
 
-<div align="center">
-<img width="1920" height="1080" alt="d" src="https://github.com/user-attachments/assets/8fbcb1ae-cb07-47d7-a745-a72046dac155" />
-<img width="1920" height="1080" alt="c" src="https://github.com/user-attachments/assets/f2b9b515-a76f-4fc0-ba6c-b6d82083f3f4" />
-<img width="1920" height="1080" alt="b" src="https://github.com/user-attachments/assets/bd43db38-e3be-47e3-93ea-1bb995298683" />
-<img width="1920" height="1080" alt="a" src="https://github.com/user-attachments/assets/ff7ddfe5-1eea-4ffc-8751-a40f4b7dfe82" />
-
-</div>
+It is designed to run locally on Linux and can operate entirely without an external cloud service.
 
 ---
 
 ## ✨ Features
 
-### 🗺️ 1. Recon & Target Intel
-- Live scanning of 2.4GHz networks using `airodump-ng` and `wash`.
-- Automatic WPS Lock status detection.
-- Focused target monitoring: Select a network to instantly discover connected client stations.
-- Sortable target list with color-coded signal strength (dBm).
+### 🗺️ 1. Recon & Target Intelligence
 
-### 🔓 2. WPS Exploitation
-- **Pixie-Dust Attack:** Automated offline WPS PIN extraction (`reaver -K 1`).
-- **PIN Brute-Force:** Targeted brute-force attacks with lockout detection.
-- Real-time logging of the Reaver output directly into the UI.
+- Live wireless discovery using `airodump-ng`
+- WPS visibility using `wash`
+- ESSID, BSSID, channel and signal information
+- Color-coded signal strength
+- Focused target monitoring
+- Connected station discovery
+- Real-time dashboard updates through WebSockets
+- Session-isolated reconnaissance data
 
-### 🤝 3. Handshake Capture (WPA/WPA2)
-- Targeted network locking and channel hopping.
-- Client/Station discovery.
-- **Automated Deauth Loop:** Sends continuous deauth packets to targeted clients to force handshake capture.
-- Real-time EAPOL detection. Automatically stops the attack once the handshake is captured.
-- Exports `.cap` files ready for cracking.
+### 🔓 2. WPS Security Testing
 
-### 🧠 4. Offline Cracking
-- One-click conversion of `.cap` files to Hashcat format (`hc22000`) using `hcxpcapngtool`.
-- Integrated `hashcat` execution with live progress status directly in the web console.
+- Pixie-Dust workflow
+- WPS PIN testing
+- Reaver integration
+- Live process output
+- Automatic result extraction
+- Controlled start / stop lifecycle
 
-### 👥 5. Evil Twin (Rogue AP) - 🚧 Work In Progress
-- Clones target ESSID and channel using `hostapd`.
-- Continuous deauth of the original AP via virtual interfaces to force client migration.
-- `dnsmasq` integration for DNS hijacking.
-- Built-in Captive Portal to phish WPA passwords.
+### 🤝 3. Wireless Capture Workflow
 
-> **Note:** The Evil Twin feature is currently in the experimental phase and under active development. Due to the complexities of single-interface routing, captive portals, and driver compatibility, it might not perform flawlessly in all environments yet. Use it with caution and expect potential bugs.
+- Target-focused capture sessions
+- Channel-specific monitoring
+- Session-isolated capture files
+- Capture artifact validation
+- Real-time capture status
+- Automatic process cleanup
+
+### 🧠 4. Offline Password Testing
+
+- `.cap` to `HC22000` conversion through `hcxpcapngtool`
+- Hashcat integration
+- Wordlist-based testing
+- Live process lifecycle tracking
+- Result extraction
+- Isolated temporary artifacts
+
+### 🛰️ 5. Experimental Rogue AP Lab
+
+- `hostapd` integration
+- `dnsmasq` integration
+- Dedicated network session
+- Interface state tracking
+- Automatic restoration
+- Experimental driver compatibility layer
+
+> The Rogue AP component is experimental and hardware/driver dependent.
+
+### ⚙️ 6. Engineered Backend
+
+- Centralized controller
+- Single operator model
+- WebSocket authentication
+- Unified process supervision
+- Thread-safe engine lifecycle
+- Session isolation
+- Automatic cleanup
+- Network state restoration
+- Explicit job states
+- Failure-aware shutdown
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+
+
+</div>
 
 ---
 
 ## 🛠️ Architecture
 
-VEKT uses a modular Producer-Consumer pattern to ensure the Web UI never freezes during intensive wireless operations. The UI runs entirely offline using a local Tailwind CSS engine.
+VEKT uses a compact modular architecture designed to keep the codebase maintainable without splitting every component into its own package.
 
 ```text
 vekt/
-├── main.py # FastAPI Web Server, WebSocket Manager & Captive Portal
+├── main.py
 ├── requirements.txt
+├── .env
+├── .env.example
+├── .gitignore
+├── LICENSE
+├── README.md
+│
 ├── static/
-│   ├── index.html # Cyberpunk Web UI (Tailwind CSS + Vanilla JS)
-│   └── tailwind.js # Local Tailwind v3 Engine (Offline support)
-└── core/ # Backend Engine (The Brains)
-    ├── recon.py # Wardriving & Target Scanning logic
-    └── attacks/ # Attack Modules
+│   ├── index.html
+│   └── tailwind.js
+│
+└── core/
+    ├── controller.py
+    ├── process.py
+    ├── network.py
+    ├── recon.py
+    └── attacks/
         ├── wps_attack.py
         ├── handshake.py
         ├── cracker.py
         └── evil_twin.py
+```
+
+### Core Flow
+
+```text
+                  ┌─────────────────────┐
+                  │     VEKT Web UI      │
+                  │  HTML + JavaScript   │
+                  └──────────┬──────────┘
+                             │
+                         WebSocket
+                             │
+                  ┌──────────▼──────────┐
+                  │   VektController     │
+                  │ State + Jobs + Flow  │
+                  └─────┬─────────┬──────┘
+                        │         │
+                ┌───────▼───┐ ┌──▼──────────┐
+                │  Network  │ │   Process   │
+                │  Manager  │ │ Supervisor  │
+                └───────┬───┘ └──────┬──────┘
+                        │             │
+                        └──────┬──────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │    Security Engines │
+                    ├─────────────────────┤
+                    │ Recon               │
+                    │ WPS                 │
+                    │ Handshake           │
+                    │ Cracker             │
+                    │ Rogue AP            │
+                    └─────────────────────┘
 ```
 
 ---
@@ -98,12 +184,18 @@ vekt/
 ## 📦 Installation & Requirements
 
 ### Prerequisites
-- Linux environment (Kali, Parrot, or Arch recommended)
-- Wireless card supporting **Monitor Mode** & **Packet Injection**
-- Root privileges
+
+- Linux environment
+- Kali Linux, Parrot OS, or another security-focused distribution recommended
+- Compatible wireless adapter
+- Linux wireless drivers
+- Root privileges for operations requiring privileged access
+
+Hardware capabilities vary depending on the workflow.
 
 ### System Dependencies
-You must have the underlying CLI tools installed:
+
+On Debian-based systems:
 
 ```bash
 sudo apt update
@@ -115,58 +207,165 @@ sudo apt install aircrack-ng reaver hashcat hcxtools hostapd dnsmasq iw
 ```bash
 git clone https://github.com/itsBONSAW/vekt.git
 cd vekt
+
+python3 -m venv .venv
+source .venv/bin/activate
+
 pip install -r requirements.txt
+```
+
+---
+
+## 🔐 Configuration
+
+Create a `.env` file in the project root:
+
+```env
+VEKT_ACCESS_TOKEN=replace_with_a_long_random_token
+VEKT_HOST=127.0.0.1
+VEKT_PORT=8000
 ```
 
 ---
 
 ## 💻 Usage
 
-Run VEKT with root privileges:
+Start VEKT:
 
 ```bash
-sudo python3 main.py
+sudo -E python3 main.py
 ```
 
-Once running, open your browser and navigate to:
-`http://localhost:8000` (or `http://<your-ip>:8000` to control it remotely).
+Then open:
+
+```
+http://127.0.0.1:8000
+```
+
+### Typical Workflow
+
+1. Select wireless interface
+2. Start reconnaissance
+3. Discover target networks
+4. Select a target
+5. Monitor connected stations
+6. Choose the required testing workflow
+7. Monitor live engine output
+8. Inspect captured or recovered results
+9. Stop the active job
+10. Restore network state
 
 ---
 
-## 🆕 What's New in v2.0? (Major Update)
-### 🧹 Massive Dependencies Cleanup:
-Reduced requirements.txt from over 700 unnecessary packages to just 3 core dependencies, making installation 10x faster and lighter.
+## 🔄 State & Job Management
 
-### 🔧 Critical Network Restoration: Added automatic restoration of NetworkManager, wpa_supplicant, and managed interface mode upon stopping, preventing permanent Wi-Fi disconnections.
+VEKT maintains a centralized application state instead of letting each WebSocket connection maintain independent engine instances.
 
-### 🔒 WebSocket Security:
-Implemented mandatory token authentication for the WebSocket endpoint to prevent unauthorized local network access.
+```text
+IDLE
+  ↓
+RECON
+  ↓
+TARGETED
+  ↓
+STARTING
+  ↓
+RUNNING
+  ├── SUCCESS
+  └── FAILED
+        ↓
+     STOPPING
+        ↓
+    RESTORING
+        ↓
+       IDLE
+```
 
-### ⚡ Zero UI Freezing:
-Migrated engine stop functions to asyncio.to_thread(), ensuring the Web UI remains 100% responsive during heavy wireless operations.
+This allows the frontend to display the real backend state instead of guessing whether an operation succeeded.
 
-### 🛡️ Complete Thread Safety:
-Replaced unsafe boolean flags with threading.Event() and asyncio.Lock to eliminate race conditions and engine overlaps.
+---
 
-### 🐛 Transparent Error Handling:
-Removed silent except: blocks; all errors and attack statuses are now clearly logged in the dashboard.
+## 🧹 Automatic Cleanup
 
-### 🧠 Smarter Attack Management:
-Fixed the silent ignore pattern (if engine: continue); users now receive clear warnings if an attack is already running.
+VEKT treats network and process changes as managed sessions.
 
-### 📡 Evil Twin Portal Fix:
-Improved the smart router logic for the captive portal to handle attacker/victim routing more reliably without hardcoded IP conflicts.
+When an operation stops or a failure occurs, the framework attempts to:
+
+- terminate active processes
+- stop background workers
+- restore interface state
+- restore network configuration
+- remove temporary session artifacts
+- release the active operator
+
+This is especially important for workflows that modify wireless interface state.
+
+---
+
+## ⚡ What's New in v2.0?
+
+### 🧠 Centralized Controller
+
+Application state and active jobs are now owned by a single `VektController`.
+
+### 🔒 WebSocket Authentication
+
+The operator channel requires a configurable access token.
+
+### ⚙️ Unified Process Supervision
+
+External security utilities are managed through a shared process abstraction with controlled startup, termination, timeout handling, and cleanup.
+
+### 🧹 Network Restoration
+
+Wireless interface state is captured before managed workflows and restored during cleanup.
+
+### 🧵 Thread-Safe Engine Lifecycle
+
+Long-running operations execute outside the FastAPI event loop so the dashboard remains responsive.
+
+### 📦 Session Isolation
+
+Temporary files are generated inside isolated session directories instead of relying on shared global paths.
+
+### 🎯 Target-Centric Workflow
+
+Reconnaissance and target monitoring are separated into distinct application states.
+
+### 🌐 Real-Time UI
+
+WebSockets provide live logs, target updates, station discovery, job states, and result events.
 
 ---
 
 ## 🤝 Acknowledgements
 
-I want to be completely transparent about the development process of VEKT. A significant portion of this tool's architecture, backend Python logic, and the cyberpunk-themed frontend were designed and written with the assistance of an AI language model. It acted as an incredible co-pilot, helping to debug complex threading issues, integrate FastAPI with WebSockets, and design the UI.
+VEKT stands on the shoulders of several excellent open-source projects and tools:
 
-Thank you to the AI for making this project come to life so rapidly. To human contributors: feel free to fork, modify, and improve upon this foundation.
+- Aircrack-ng
+- Reaver
+- Hashcat
+- hcxtools
+- hostapd
+- dnsmasq
+- FastAPI
+- Scapy
+
+A significant portion of VEKT's architecture, refactoring, debugging, and UI development was performed with the assistance of AI as a development copilot.
+
+The project was iteratively designed and reviewed around maintainability, process management, network state handling, and operator experience.
 
 ---
 
 <div align="center">
-<sub>Happy Hacking.</sub>
+
+**V E K T**  
+*Vector Exploitation & Kill Toolkit*
+
+Built for authorized security testing, private laboratories, research, and CTF environments.
+
+**Made by itsBONSAW & AI**
+
+*Recon. Target. Analyze. Test.*
+
 </div>
