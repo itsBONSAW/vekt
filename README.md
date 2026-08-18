@@ -113,10 +113,7 @@ It is designed to run locally on Linux and can operate entirely without an exter
 
 <div align="center">
 
-
-![Uploading c.jpg…]()
 <img width="1920" height="1080" alt="d" src="https://github.com/user-attachments/assets/520d93b0-6f02-4ea8-a2f5-07d5066abc2f" />
-
 
 </div>
 
