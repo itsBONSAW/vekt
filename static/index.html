@@ -889,6 +889,10 @@ async function loadInterfaces() {
             dom.interfaceSelect.value =
                 state.interface;
         }
+            send({
+                action: "set_interface",
+                interface: state.interface
+            });
     } catch (error) {
         log(
             `Interface discovery failed: ${error.message}`
