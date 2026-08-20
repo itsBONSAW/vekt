@@ -26,10 +26,6 @@ from core.attacks.evil_twin import EvilTwinEngine
 
 ACCESS_TOKEN = os.getenv("VEKT_ACCESS_TOKEN")
 
-if not ACCESS_TOKEN:
-    ACCESS_TOKEN = secrets.token_urlsafe(32)
-
-
 class JobState(str, Enum):
     IDLE = "IDLE"
     STARTING = "STARTING"
@@ -187,8 +183,7 @@ class VektController:
 
         self.session_dir = Path(
             tempfile.mkdtemp(
-                prefix="vekt_",
-                mode=0o700,
+                prefix="vekt_"
             )
         )
 
@@ -973,11 +968,20 @@ async def fallback(
         status_code=404,
     )
 
-
 if __name__ == "__main__":
+    if not ACCESS_TOKEN:
+        ACCESS_TOKEN = secrets.token_urlsafe(24)
+        os.environ["VEKT_ACCESS_TOKEN"] = ACCESS_TOKEN
+        print(
+            "\n[!] VEKT_ACCESS_TOKEN is not set."
+            "\n[!] Generated temporary access token:"
+            f"\n    {ACCESS_TOKEN}\n"
+        )
+    print(f"[+] Open VEKT in your browser: http://127.0.0.1:9000/?token={ACCESS_TOKEN}\n")
+    
     uvicorn.run(
         "main:app",
         host="127.0.0.1",
-        port=8000,
+        port=9000,
         reload=False,
     )
