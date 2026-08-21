@@ -40,7 +40,6 @@ class CrackerEngine:
         self.session_dir = Path(
             tempfile.mkdtemp(
                 prefix="vekt_crack_",
-                mode=0o700,
             )
         )
 

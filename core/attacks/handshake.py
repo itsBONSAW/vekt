@@ -47,7 +47,6 @@ class HandshakeCaptureEngine:
         self.session_dir = Path(
             tempfile.mkdtemp(
                 prefix="vekt_handshake_",
-                mode=0o700,
             )
         )
 

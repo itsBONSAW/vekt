@@ -49,7 +49,6 @@ class ReconEngine:
         self.session_dir = Path(
             tempfile.mkdtemp(
                 prefix="vekt_recon_",
-                mode=0o700,
             )
         )
 
@@ -498,7 +497,6 @@ class TargetScanner:
         self.session_dir = Path(
             tempfile.mkdtemp(
                 prefix="vekt_target_",
-                mode=0o700,
             )
         )
 

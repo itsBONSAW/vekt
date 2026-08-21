@@ -977,11 +977,10 @@ if __name__ == "__main__":
             "\n[!] Generated temporary access token:"
             f"\n    {ACCESS_TOKEN}\n"
         )
-    print(f"[+] Open VEKT in your browser: http://127.0.0.1:9000/?token={ACCESS_TOKEN}\n")
+    print(f"[+] Open VEKT in your browser: http://127.0.0.1:8000/?token={ACCESS_TOKEN}\n")
     
     uvicorn.run(
         "main:app",
         host="127.0.0.1",
-        port=9000,
         reload=False,
     )

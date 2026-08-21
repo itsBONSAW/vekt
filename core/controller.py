@@ -101,7 +101,6 @@ class VektController:
         self.session_dir = Path(
             tempfile.mkdtemp(
                 prefix=f"vekt_{self.session_id[:8]}_",
-                mode=0o700,
             )
         )
 

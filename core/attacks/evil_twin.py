@@ -47,7 +47,6 @@ class EvilTwinEngine:
         self.session_dir = Path(
             tempfile.mkdtemp(
                 prefix="vekt_et_",
-                mode=0o700,
             )
         )
 
